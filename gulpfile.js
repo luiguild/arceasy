@@ -25,7 +25,7 @@ const gulp = require('gulp'),
         js: {
             src: `${paths.development}/index.js`,
             dest: `${paths.production}/`,
-            development: `${paths.development}/`,
+            development: `${paths.development}/**/*.js`,
             production: `${paths.production}/${app.name}.min.js`
         }
     }
@@ -33,8 +33,8 @@ const gulp = require('gulp'),
 //
 // WATCHERS
 //
-gulp.task('watch', () => {
-    gulp.watch([files.js.development], file => {
+gulp.task('watch:js', function () {
+    gulp.watch([files.js.development], function (file) {
         $.runSequence('make:js')
     })
 })
@@ -42,7 +42,7 @@ gulp.task('watch', () => {
 //
 // TASKS
 //
-gulp.task('make:js', function (cb) {
+gulp.task('make:js', cb => {
     $.pump([
         gulp.src(files.js.src),
         $.sourcemaps.init(),
@@ -51,7 +51,7 @@ gulp.task('make:js', function (cb) {
             comments: false,
             minified: true
         }),
-        $.rename(function (path) {
+        $.rename(path => {
             path.basename = `${app.name}.min`
         }),
         $.jsvalidate(),
@@ -65,6 +65,10 @@ gulp.task('make:js', function (cb) {
 //
 gulp.task('default', ['make'])
 
-gulp.task('make', function () {
+gulp.task('watch', () => {
+    $.runSequence('watch:js')
+})
+
+gulp.task('make', () => {
     $.runSequence('make:js')
 })
