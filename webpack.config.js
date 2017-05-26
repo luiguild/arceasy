@@ -1,4 +1,5 @@
-const path = require('path'),
+const webpack = require('webpack'),
+    path = require('path'),
     config = {
         context: path.resolve(__dirname, 'src'),
         entry: './index.js',
@@ -6,6 +7,17 @@ const path = require('path'),
             path: path.resolve(__dirname, 'dist'),
             filename: 'esrijs.js'
         },
+        plugins: [
+            new webpack.optimize.UglifyJsPlugin({
+                include: /\.min\.js$/,
+                minimize: true,
+                mangle: false,
+                sourcemap: true,
+                compress: {
+                    warnings: false
+                }
+            })
+        ],
         module: {
             rules: [{
                 test: /\.js$/,
@@ -16,11 +28,7 @@ const path = require('path'),
                         presets: [
                             [
                                 'es2015',
-                                {
-                                    modules: false,
-                                    comments: false,
-                                    minified: true
-                                }
+                                'stage-2'
                             ]
                         ]
                     }
