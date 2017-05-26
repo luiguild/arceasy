@@ -2,25 +2,33 @@ import * as logger from './logger'
 import { constructors, global } from './map'
 import { loadLayers } from './layers'
 
-const createView = (map, View, container) => {
+const createView = (map, View, config) => {
         logger.log('Creating View...')
-        global.view = new View({
-            container: container,
-            map: map,
-            scale: 25000000,
-            center: [-52.17, -13.78],
-            viewingMode: 'global',
-            starsEnabled: true,
-            atmosphereEnabled: true
-        })
 
-        global.view.then(() => {
+        const search = constructors.utils.Search,
+            watchUtils = constructors.utils.watchUtils,
+            view = new View({
+                container: config.element,
+                map: map,
+                scale: config.scale,
+                center: [
+                    config.longitude,
+                    config.latitude
+                ],
+                viewingMode: 'global',
+                starsEnabled: config.stars,
+                atmosphereEnabled: config.atmosphere
+            })
+
+        view.then(() => {
             logger.log('View ready!')
 
-            controlUI(global.view, constructors.utils.Search)
+            controlUI(view, search)
             loadLayers()
-            watcherRunning(global.map, global.view, constructors.utils.watchUtils)
+            watcherRunning(map, view, watchUtils)
         })
+
+        return view
     },
     watcherRunning = (map, view, watchUtils) => {
         watchUtils.whenTrue(view, 'stationary', () => {
@@ -31,15 +39,15 @@ const createView = (map, View, container) => {
 
                 map.allLayers.map((elm, indx, arr) => {
                     if (((view.scale < elm.minScale &&
-                        view.scale > elm.maxScale) ||
-                        (elm.minScale === 0 &&
+                            view.scale > elm.maxScale) ||
+                            (elm.minScale === 0 &&
                             elm.maxScale === 0)) &&
                             (elm.raw !== undefined &&
-                                elm.visible)) {
+                            elm.visible)) {
                         if (elm.raw.esri.type === 0) {
                             const urlQuery = `!xmin=${view.extent.xmin}!xmax=${view.extent.xmax}!ymin=${view.extent.ymin}!ymax=${view.extent.ymax}`
 
-                            logger.log(`Getting quadrant to request ${elm.title}`)
+                            logger.log(`Getting extent to request ${elm.title}`)
                             logger.log(`Requesting to server: ${elm.raw.esri.url}/where=${urlQuery}`)
 
                             elm.definitionExpression = urlQuery
@@ -65,17 +73,22 @@ const createView = (map, View, container) => {
         })
 
         view.ui.remove([
-            'zoom', 'compass', 'navigation-toggle'
+            'zoom',
+            'compass',
+            'navigation-toggle'
         ])
     },
-    newPosition = (_coordinates, _scale, _camera) => {
+    newPosition = ({coordinates, scale, camera}) => {
         const view = global.view
 
         view.goTo({
-            center: [_coordinates.longitude, _coordinates.latitude],
-            scale: _scale,
-            tilt: _camera.tilt,
-            heading: _camera.heading
+            center: [
+                coordinates.longitude,
+                coordinates.latitude
+            ],
+            scale: scale,
+            tilt: camera.tilt,
+            heading: camera.heading
         })
 
         logger.log(`Changing map position...`)

@@ -32,7 +32,7 @@ const constructors = {
         map: '',
         view: ''
     },
-    start = container => {
+    start = options => {
         // has the ArcGIS API been added to the page?
         if (!esriLoader.isLoaded()) {
             // no, lazy load it the ArcGIS API before using its classes
@@ -42,7 +42,7 @@ const constructors = {
                 }
                 // once it's loaded, create the map
                 logger.log('Waiting ESRI servers...')
-                dojoLoader(container)
+                dojoLoader(options)
             }, {
                 // use a specific version instead of latest 4.x
                 // url: 'https://js.arcgis.com/4.3/'
@@ -51,10 +51,10 @@ const constructors = {
         } else {
             // ArcGIS API is already loaded, just create the map
             logger.log('Waiting ESRI servers...')
-            dojoLoader(container)
+            dojoLoader(options)
         }
     },
-    dojoLoader = container => {
+    dojoLoader = options => {
         esriLoader.dojoRequire([
             'esri/config',
             'esri/Map',
@@ -149,10 +149,12 @@ const constructors = {
             if (constructors.Map && constructors.SceneView) {
                 logger.log('All constructorss created!')
 
-                createView(
-                    createMap(constructors.Map),
+                global.map = createMap(constructors.Map)
+
+                global.view = createView(
+                    global.map,
                     constructors.SceneView,
-                    container
+                    options
                 )
             } else {
                 logger.error('Error during creating constructorss... Try again.')
@@ -161,13 +163,14 @@ const constructors = {
     },
     createMap = Map => {
         logger.log('Creating map...')
-        global.map = new Map({
+
+        const map = new Map({
             basemap: 'dark-gray',
             ground: 'world-elevation',
             layers: []
         })
 
-        return global.map
+        return map
     }
 
 export {
