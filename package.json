@@ -1,6 +1,6 @@
 {
     "name": "esrijs",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "A simple library to help you work with ESRI Javascript API v4.x",
     "main": "dist/esrijs.js",
     "scripts": {
@@ -11,7 +11,16 @@
         "type": "git",
         "url": "git+https://github.com/luiguild/esrijs.git"
     },
-    "keywords": [],
+    "keywords": [
+        "arcgis",
+        "esrijs",
+        "esri",
+        "esri 4",
+        "esri v4",
+        "gis",
+        "mapping",
+        "geodevelopment"
+    ],
     "author": "Luigui Delyer",
     "license": "MIT",
     "bugs": {
