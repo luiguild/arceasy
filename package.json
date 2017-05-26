@@ -2,7 +2,7 @@
     "name": "esrijs",
     "version": "1.0.0",
     "description": "",
-    "main": "dist/esrijs.min.js",
+    "main": "dist/esrijs.js",
     "scripts": {
         "dev": "webpack --watch",
         "build": "webpack -p"
