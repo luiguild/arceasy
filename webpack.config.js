@@ -1,23 +1,14 @@
-const webpack = require('webpack'),
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin'),
     path = require('path'),
     config = {
         context: path.resolve(__dirname, 'src'),
         entry: './index.js',
+        devtool: 'source-map',
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: 'esrijs.js'
+            filename: 'esrijs.js',
+            sourceMapFilename: '[file].map'
         },
-        plugins: [
-            new webpack.optimize.UglifyJsPlugin({
-                include: /\.min\.js$/,
-                minimize: true,
-                mangle: false,
-                sourcemap: true,
-                compress: {
-                    warnings: false
-                }
-            })
-        ],
         module: {
             rules: [{
                 test: /\.js$/,
@@ -34,7 +25,14 @@ const webpack = require('webpack'),
                     }
                 }]
             }]
-        }
+        },
+        plugins: [
+            new UglifyJSPlugin({
+                compress: false,
+                comments: false,
+                sourceMap: true
+            })
+        ]
     }
 
 module.exports = config
