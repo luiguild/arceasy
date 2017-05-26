@@ -1,6 +1,6 @@
 {
     "name": "esrijs",
-    "version": "1.0.0",
+    "version": "0.0.0",
     "description": "A simple library to help you work with ESRI Javascript API v4.x",
     "main": "dist/esrijs.js",
     "scripts": {
