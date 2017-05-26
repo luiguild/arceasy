@@ -1,21 +1,7 @@
 import * as logger from './logger'
 import { constructors, global } from './map'
-import { getAllLayers as getLayers } from '../axios/layers'
 
-const allLayers = [],
-    loadLayers = () => {
-        logger.log(`Fetching layers...`)
-
-        getLayers()
-        .then(response => response.data)
-        .then(data => data.layers)
-        .then(data => {
-            allLayers.push(data)
-
-            createLayer(data)
-        })
-    },
-    createLayer = layers => {
+const createLayer = layers => {
         layers.map((elm, indx, arr) => {
             let LayerConstructor
 
@@ -30,11 +16,16 @@ const allLayers = [],
             logger.log(`Adding id by index on layer`)
             elm.id = indx
 
-            addNewLayer(LayerConstructor, constructors.utils.watchUtils, constructors.utils.jsonUtils, elm)
+            addNewLayer(
+                LayerConstructor,
+                constructors.utils.watchUtils,
+                constructors.utils.jsonUtils,
+                elm
+            )
         })
     },
     addNewLayer = (LayerConstructor, watchUtils, jsonUtils, _layer) => {
-        logger.log(`Adding layer on map: ${_layer.title} | Visibility: ${_layer.esri.visible}`)
+        logger.log(`Adding layer on map: ${_layer.title} | Initial visibility: ${_layer.esri.visible}`)
         logger.log(`Loading layer from: ${_layer.esri.url}`)
 
         const layer = new LayerConstructor({
@@ -181,7 +172,7 @@ const allLayers = [],
     // }
 
 export {
-    loadLayers,
+    createLayer,
     addNewLayer,
     addGraphicLayer,
     visibility,

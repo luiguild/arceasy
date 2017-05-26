@@ -1,6 +1,5 @@
 import * as logger from './logger'
 import { constructors, global } from './map'
-import { loadLayers } from './layers'
 
 const createView = (map, View, config) => {
         logger.log('Creating View...')
@@ -24,7 +23,6 @@ const createView = (map, View, config) => {
             logger.log('View ready!')
 
             controlUI(view, search)
-            loadLayers()
             watcherRunning(map, view, watchUtils)
         })
 
