@@ -25,14 +25,12 @@ GITURL=`git config remote.origin.url`
 rm -rf npm
 mkdir npm
 mkdir npm/src
-mkdir npm/src/components
-mkdir npm/src/sass
-yarn version
+mkdir npm/dist
 cp package.json npm/package.json
 cp README.md npm/README.md
 cp readme-image.png npm/readme-image.png
-cp -rf src/components/* npm/src/components/
-cp -rf src/sass/* npm/src/sass/
+cp -rf src/* npm/src/
+cp -rf dist/* npm/dist/
 cd npm
 rm -rf .git/
 git init
@@ -40,4 +38,5 @@ git remote add origin $GITURL
 git add .
 git commit -am "npm publish"
 git push origin master:npm --force
+yarn version
 npm publish
