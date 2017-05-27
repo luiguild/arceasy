@@ -256,6 +256,5 @@ const createMap = (Map, basemap) => {
 
 export {
     options,
-    start,
-    constructors
+    start
 }
