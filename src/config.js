@@ -1,1 +1,1 @@
-export const prefix = '[MAPVIS]'
+export const prefix = '[ArcEasy]'

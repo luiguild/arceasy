@@ -6,7 +6,7 @@ const UglifyJSPlugin = require('uglifyjs-webpack-plugin'),
         devtool: 'source-map',
         output: {
             path: path.resolve(__dirname, 'dist'),
-            filename: 'esrijs.js',
+            filename: 'arceasy.js',
             sourceMapFilename: '[file].map'
         },
         module: {

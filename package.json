@@ -1,18 +1,19 @@
 {
-    "name": "esrijs",
+    "name": "arceasy",
     "version": "0.0.0",
     "description": "A simple library to help you work with ESRI Javascript API v4.x",
-    "main": "dist/esrijs.js",
+    "main": "dist/arceasy.js",
     "scripts": {
         "dev": "webpack --watch",
         "build": "webpack -p"
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/luiguild/esrijs.git"
+        "url": "git+https://github.com/luiguild/arceasy.git"
     },
     "keywords": [
         "arcgis",
+        "arceasy",
         "esrijs",
         "esri",
         "esri 4",
@@ -24,9 +25,9 @@
     "author": "Luigui Delyer",
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/luiguild/esrijs/issues"
+        "url": "https://github.com/luiguild/arceasy/issues"
     },
-    "homepage": "https://github.com/luiguild/esrijs#readme",
+    "homepage": "https://github.com/luiguild/arceasy#readme",
     "devDependencies": {
         "babel-core": "^6.0.0",
         "babel-eslint": "^7.0.0",
