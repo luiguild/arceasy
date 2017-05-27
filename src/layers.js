@@ -1,5 +1,5 @@
 import * as logger from './logger'
-import { constructors, global } from './map'
+import { global, constructors } from './config'
 
 /**
  * Recieve all layers to add on map
@@ -10,27 +10,27 @@ import { constructors, global } from './map'
  * @param  {Number} [layers[].esri.type = 1] - Layer is TileLayer
  */
 const create = layers => {
-    layers.forEach((elm, indx) => {
-        const layerConstructors = constructors.layer
-        const utilsConstructors = constructors.utils
-        let finalConstructor
+    const layerConstructors = constructors.layer
+    const utilsConstructors = constructors.utils
+    let finalConstructor
 
-        if (elm.esri.type === 0) {
+    layers.forEach((layer, indx) => {
+        if (layer.esri.type === 0) {
             logger.log(`Creating new Feature Layer...`)
             finalConstructor = layerConstructors.FeatureLayer
-        } else if (elm.esri.type === 1) {
+        } else if (layer.esri.type === 1) {
             logger.log(`Creating new Tile Layer...`)
             finalConstructor = layerConstructors.TileLayer
         }
 
         logger.log(`Adding id by index on layer`)
-        elm.id = indx
+        layer.id = indx
 
         addNew(
             finalConstructor,
             utilsConstructors.watchUtils,
             utilsConstructors.jsonUtils,
-            elm
+            layer
         )
     })
 }
@@ -84,22 +84,37 @@ const addNew = (constructor, watchUtils, jsonUtils, _layer) => {
 }
 
 /**
- * Change layer visibility
+ * Find specific layer in map
  * @param  {String|Number} _layer - Layer title or ID
- * @param  {Boolean} status - Set if layer is visible or not
+ * @return {Object} Layer that will be manipulated
  */
-const setVisibility = (_layer, status) => {
+const findLayer = _layer => {
     const map = global.map
 
-    map.allLayers.map((elm, indx, arr) => {
-        if (elm.raw !== undefined) {
-            if (elm.raw.title === _layer ||
-                elm.raw.id === _layer) {
-                elm.visible = status
-                logger.log(`Change visibility of layer: ${_layer} to: ${status}`)
+    return map.allLayers.find(layer => {
+        if (layer.raw !== undefined) {
+            if (layer.raw.title === _layer ||
+                layer.raw.id === _layer) {
+                return layer
             }
         }
     })
+}
+
+/**
+ * Change layer visibility
+ * @param  {String|Number} _layer - Layer title or ID
+ * @param  {Boolean} visibility - Set if layer is visible or not
+ */
+const setVisibility = (_layer, visibility) => {
+    const layer = findLayer(_layer)
+
+    if (layer) {
+        layer.visible = visibility
+        logger.log(`Change visibility of layer: ${_layer} to: ${visibility}`)
+    } else {
+        logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
+    }
 }
 
 /**
@@ -108,14 +123,28 @@ const setVisibility = (_layer, status) => {
  * @param  {Number} _opacity - new opacity
  */
 const setOpacity = (_layer, _opacity) => {
+    const layer = findLayer(_layer)
+
+    if (layer) {
+        layer.opacity = _opacity / 100
+        logger.log(`Change opacity of layer: ${_layer} to: ${_opacity}`)
+    } else {
+        logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
+    }
+}
+
+/**
+ * Change visibility of all layers using parameter
+ * @param  {Boolean} visibility - new opacity
+ */
+const changeVisibility = visibility => {
     const map = global.map
 
-    map.allLayers.map((elm, indx, arr) => {
-        if (elm.raw !== undefined) {
-            if (elm.raw.title === _layer ||
-                elm.raw.id === _layer) {
-                elm.opacity = _opacity / 100
-                logger.log(`Change opacity of layer: ${_layer} to: ${_opacity}`)
+    map.allLayers.map(layer => {
+        if (layer.raw !== undefined) {
+            if (layer.visible === !visibility) {
+                layer.visible = visibility
+                logger.log(`Change visibility of layer: ${layer.raw.title} to: ${visibility}`)
             }
         }
     })
@@ -125,32 +154,14 @@ const setOpacity = (_layer, _opacity) => {
  * Set visibility of all layers to false
  */
 const hideAll = () => {
-    const map = global.map
-
-    map.allLayers.map((elm, indx, arr) => {
-        if (elm.raw !== undefined) {
-            if (elm.visible === true) {
-                elm.visible = false
-                logger.log(`Change visibility of layer: ${elm.raw.title} to: ${false}`)
-            }
-        }
-    })
+    changeVisibility(false)
 }
 
 /**
  * Set visibility of all layers to true
  */
 const showAll = () => {
-    const map = global.map
-
-    map.allLayers.map((elm, indx, arr) => {
-        if (elm.raw !== undefined) {
-            if (elm.visible === false) {
-                elm.visible = true
-                logger.log(`Change visibility of layer: ${elm.raw.title} to: ${false}`)
-            }
-        }
-    })
+    changeVisibility(true)
 }
 
 export {

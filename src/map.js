@@ -1,55 +1,11 @@
 import * as esriLoader from 'esri-loader'
 import * as logger from './logger'
 import { createView } from './view'
-
-const global = {
-    map: '',
-    view: '',
-    options: {
-        element: '',
-        scale: 25000000,
-        center: {
-            longitude: -13.78,
-            latitude: -52.17
-        },
-        basemap: 'streets',
-        stars: '',
-        atmosphere: '',
-        cors: '',
-        proxy: ''
-    },
-    loaded: false
-}
-
-const constructors = {
-    layer: {
-        FeatureLayer: '',
-        TileLayer: ''
-    },
-    map: '',
-    container: '',
-    view: '',
-    utils: {
-        watchUtils: '',
-        Search: '',
-        jsonUtils: '',
-        Extent: ''
-    },
-    renderer: {
-        UniqueValueRenderer: '',
-        ClassBreaksRenderer: '',
-        ExtrudeSymbol3DLayer: '',
-        PolygonSymbol3D: '',
-        SimpleRenderer: '',
-        SimpleMarkerSymbol: '',
-        PictureMarkerSymbol: '',
-        SimpleLineSymbol: '',
-        SimpleFillSymbol: ''
-    }
-}
+import { global, constructors } from './config'
 
 /**
- * To start using ArcEasy you need invocate this function first.
+ * Simple function to set globaly options about the map
+ * To start using ArcEasy you need invocate this function first
  * @param  {Object} options - Group of informations about your
  *                            app and how map will be
  * @param  {String} options.element - DOM element that map will be created
@@ -112,7 +68,7 @@ const options = options => {
 }
 
 /**
- * The BigBang function.
+ * The BigBang function
  * To create your map you need invocate this function
  * @param  {String} cdn - URL to official ESRI CDN or your own ESRI CDN provided by you
  */
