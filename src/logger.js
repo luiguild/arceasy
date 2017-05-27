@@ -1,39 +1,49 @@
 import { prefix } from './config'
 
-let logCounter = 0,
-    errorCounter = 0,
-    warnCounter = 0
+let logCounter = 0
+let errorCounter = 0
+let fatalCounter = 0
+let warnCounter = 0
 
 const log = (message, _object) => {
-        const object = _object !== undefined
-            ? _object
-            : ''
+    const object = _object !== undefined
+        ? _object
+        : ''
 
-        logCounter++
+    logCounter++
 
-        return console.log(`${logCounter} ${prefix} ${message}`, object)
-    },
-    error = (message, _object) => {
-        const object = _object !== undefined
-            ? _object
-            : ''
+    return console.log(`${logCounter} ${prefix} ${message}`, object)
+}
 
-        errorCounter++
+const error = (message, _object) => {
+    const object = _object !== undefined
+        ? _object
+        : ''
 
-        return console.error(`${errorCounter} ${prefix} ${message}`, object)
-    },
-    warn = (message, _object) => {
-        const object = _object !== undefined
-            ? _object
-            : ''
+    errorCounter++
 
-        warnCounter++
+    return console.error(`${errorCounter} ${prefix} ${message}`, object)
+}
 
-        return console.warn(`${warnCounter} ${prefix} ${message}`, object)
-    }
+const fatal = (message) => {
+    fatalCounter++
+
+    throw new Error(`${fatalCounter} ${prefix} ${message}`)
+}
+
+const warn = (message, _object) => {
+    const object = _object !== undefined
+        ? _object
+        : ''
+
+    warnCounter++
+
+    return console.warn(`${warnCounter} ${prefix} ${message}`, object)
+}
 
 export {
     log,
     error,
+    fatal,
     warn
 }

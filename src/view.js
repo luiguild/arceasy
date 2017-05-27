@@ -1,22 +1,35 @@
 import * as logger from './logger'
 import { constructors, global } from './map'
 
-const createView = (map, View, config) => {
+/**
+ * Create view inside map
+ * @param  {Object} options - Group of informations about your
+ *                            app and how map will be
+ * @param  {String} options.element - DOM element that map will be created
+ * @param  {Number} options.scale - Initial map scale
+ * @param  {Number} options.center.longitude - Center map Longitude
+ * @param  {Number} options.center.latitude - Center map Latitude
+ * @param  {Boolean} options.stars - If stars are enabled
+ * @param  {Boolean} options.atmosphere - If atmosphere are enabled
+ * @param  {Array} options.cors - A group of URLs that you need enable CORS
+ * @param  {String} options.proxy - Single URL that will proxy your requests
+ */
+const createView = (map, View, options) => {
         logger.log('Creating View...')
 
         const search = constructors.utils.Search,
             watchUtils = constructors.utils.watchUtils,
             view = new View({
-                container: config.element,
+                container: options.element,
                 map: map,
-                scale: config.scale,
+                scale: options.scale,
                 center: [
-                    config.longitude,
-                    config.latitude
+                    options.longitude,
+                    options.latitude
                 ],
                 viewingMode: 'global',
-                starsEnabled: config.stars,
-                atmosphereEnabled: config.atmosphere
+                starsEnabled: options.stars,
+                atmosphereEnabled: options.atmosphere
             })
 
         view.then(() => {
