@@ -16,7 +16,14 @@ module.exports = {
     // add your custom rules here
     'rules': {
         'indent': ['error', 4],
-        'one-var': ["error", "always"],
+        'one-var': [
+            "error",
+            {
+                var: "never",
+                let: "never",
+                const: "never"
+            }
+        ],
         // allow paren-less arrow functions
         'arrow-parens': 0,
         // allow async-await
