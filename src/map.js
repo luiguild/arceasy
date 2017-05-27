@@ -13,8 +13,12 @@ import { global, constructors } from './config'
  * @param  {Number} options.center.longitude - Center map Longitude
  * @param  {Number} options.center.latitude - Center map Latitude
  * @param  {String} options.basemap - Initial basemap
- * @param  {Boolean} options.stars - If stars are enabled
- * @param  {Boolean} options.atmosphere - If atmosphere are enabled
+ * @param  {Boolean} options.stars - If stars is enabled
+ * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
+ * @param  {Boolean} options.atmosphere.quality - Atmosphere quality
+ * @param  {Boolean} options.search.enable - If search is enabled
+ * @param  {Boolean} options.search.position - Search position
+ * @param  {Boolean} options.search.index - Search index
  * @param  {Array} options.cors - A group of URLs that you need enable CORS
  * @param  {String} options.proxy - Single URL that will proxy your requests
  */
@@ -38,8 +42,20 @@ const options = options => {
         options.stars ||
             logger.warn(`You not set if map usign stars. Usign default: ${global.options.stars}`)
 
-        options.atmosphere ||
-            logger.warn(`You not set if map usign atmosphere efect. Usign default: ${global.options.atmosphere}`)
+        options.atmosphere.enable ||
+            logger.warn(`You not set if map usign atmosphere efect. Usign default: ${global.options.atmosphere.enable}`)
+
+        options.atmosphere.quality ||
+            logger.warn(`You not set atmosphere quality. Usign default: ${global.options.atmosphere.quality}`)
+
+        options.search.enable ||
+            logger.warn(`You not set Search. Usign default: ${global.options.search.enable}`)
+
+        options.search.position ||
+            logger.warn(`You not set Search position. Usign default: ${global.options.search.position}`)
+
+        options.search.index ||
+            logger.warn(`You not set Search index. Usign default: ${global.options.search.index}`)
 
         options.cors ||
             logger.warn(`You not set any URL to enable CORS requests`)
@@ -238,6 +254,5 @@ const createMap = (Map, basemap) => {
 export {
     options,
     start,
-    constructors,
-    global
+    constructors
 }

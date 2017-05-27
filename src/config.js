@@ -11,8 +11,16 @@ export const global = {
             latitude: -52.17
         },
         basemap: 'streets',
-        stars: '',
-        atmosphere: '',
+        stars: true,
+        atmosphere: {
+            enable: true,
+            quality: 'low'
+        },
+        search: {
+            enable: false,
+            position: 'top-left',
+            index: 1
+        },
         cors: '',
         proxy: ''
     },
