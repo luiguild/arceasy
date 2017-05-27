@@ -26,11 +26,13 @@ rm -rf npm
 mkdir npm
 mkdir npm/src
 mkdir npm/dist
+mkdir npm/static
 cp package.json npm/package.json
 cp README.md npm/README.md
 cp readme-image.png npm/readme-image.png
 cp -rf src/* npm/src/
 cp -rf dist/* npm/dist/
+cp -rf static/* npm/static/
 cd npm
 rm -rf .git/
 git init

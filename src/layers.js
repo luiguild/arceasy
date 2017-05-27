@@ -2,65 +2,109 @@ import * as logger from './logger'
 import { global, constructors } from './config'
 
 /**
- * Recieve all layers to add on map
+ * Recieve all layers, work and add on map
  * @constructor
  * @param  {Array} layers - List of layers
- * @param  {Number} layers[].esri.type - Define the type of layer
- * @param  {Number} [layers[].esri.type = 0] - Layer is FeatureLayer
- * @param  {Number} [layers[].esri.type = 1] - Layer is TileLayer
  */
-const create = layers => {
-    const layerConstructors = constructors.layer
-    const utilsConstructors = constructors.utils
-    let finalConstructor
+const add = layers => {
+    layers.map((layer, indx) => {
+        if (validate(layer)) {
+            logger.log(`Adding id by index on layer`)
+            layer.id = indx
 
-    layers.forEach((layer, indx) => {
-        if (layer.esri.type === 0) {
-            logger.log(`Creating new Feature Layer...`)
-            finalConstructor = layerConstructors.FeatureLayer
-        } else if (layer.esri.type === 1) {
-            logger.log(`Creating new Tile Layer...`)
-            finalConstructor = layerConstructors.TileLayer
+            global.map.add(create(layer))
         }
-
-        logger.log(`Adding id by index on layer`)
-        layer.id = indx
-
-        addNew(
-            finalConstructor,
-            utilsConstructors.watchUtils,
-            utilsConstructors.jsonUtils,
-            layer
-        )
     })
 }
 
 /**
- * Recieve a single layer object and add on map
- * @param {Function} constructor - ESRI Layer Constructor
- * @param {Function} watchUtils - ESRI watcher Constructor
- * @param {Function} jsonUtils - ESRI JSON Utility Constructor
- * @param {Object} _layer - Valid Layer object previously worked
+ * Validate single layer
+ * @param  {Object} layer - Layer with some options
+ * @return {Boolean} True or false to validation
  */
-const addNew = (constructor, watchUtils, jsonUtils, _layer) => {
-    logger.log(`Adding layer on map: ${_layer.title} | Initial visibility: ${_layer.esri.visible}`)
-    logger.log(`Loading layer from: ${_layer.esri.url}`)
+const validate = layer => {
+    if (layer) {
+        if (layer.title === undefined ||
+            layer.title === '' ||
+            !layer.title) {
+            logger.fatal(`You need provide a layer title`)
 
-    const layer = new constructor({
-        id: _layer.id,
-        url: _layer.esri.url,
-        definitionExpression: _layer.esri.definitionExpression,
-        raw: _layer,
-        visible: _layer.esri.visible
-    })
+            return false
+        }
 
-    if (layer.raw.esri.renderer) {
-        logger.log(`Applying renderer...`)
+        if (layer.visible === undefined ||
+            layer.visible === '') {
+            layer.visible = true
+            logger.warn(`You not set intial visible. Usign default: true`)
+        }
 
-        layer.renderer = jsonUtils.fromJSON(layer.raw.esri.renderer)
+        if (layer.definitionExpression === undefined ||
+            layer.definitionExpression === '') {
+            layer.definitionExpression = ''
+            logger.warn(`You not set intial definitionExpression. Usign default: ''`)
+        }
+
+        if (layer.type === undefined ||
+            layer.type === '' ||
+            !layer.type) {
+            logger.fatal(`You need provide a layer type (0 = FeatureLayer, 1 = TileLayer)`)
+
+            return false
+        }
+
+        if (layer.url === undefined ||
+            layer.url === '' ||
+            !layer.url) {
+            logger.fatal(`You need provide an URL layer`)
+
+            return false
+        }
+
+        return true
+    } else {
+        logger.fatal(`You need pass some informations to describe your layer`)
+        return false
+    }
+}
+
+/**
+ * Recieve a single layer object and return layer ready
+ * @param {Object} _layer - Valid Layer object previously worked
+ * @return {Object} Layer ready to add on map
+ */
+const create = (_layer) => {
+    const layerConstructors = constructors.layer
+    const utilsConstructors = constructors.utils
+    const jsonUtils = utilsConstructors.jsonUtils
+    let LayerType
+
+    if (_layer.type === 0) {
+        logger.log(`Creating new Feature Layer...`)
+        LayerType = layerConstructors.FeatureLayer
+    } else if (_layer.type === 1) {
+        logger.log(`Creating new Tile Layer...`)
+        LayerType = layerConstructors.TileLayer
     }
 
-    // if (layer.raw.esri.popupTemplate) {
+    logger.log(`Adding layer on map: ${_layer.title} | Initial visibility: ${_layer.visible}`)
+
+    const layer = new LayerType({
+        id: _layer.id,
+        url: _layer.url,
+        definitionExpression: _layer.definitionExpression,
+        raw: _layer,
+        visible: _layer.visible
+    })
+
+    logger.log(`Loading layer from: ${_layer.url}`)
+
+    if (layer.raw.renderer) {
+        logger.log(`Applying renderer...`)
+
+        layer.renderer = jsonUtils.fromJSON(layer.raw.renderer)
+    }
+
+    // if (layer.raw.popupTemplate) {
     //     layer.popupTemplate = applyingPopups(layer.raw)
     // }
 
@@ -68,19 +112,19 @@ const addNew = (constructor, watchUtils, jsonUtils, _layer) => {
         logger.log(`Layer ${layer.title} ready!`)
         logger.log(`View waiting changes...`)
 
-        if (layer.raw.esri.type === 1) {
-            layer.minScale = layer.raw.esri.minScale !== null
-                ? layer.raw.esri.minScale
+        if (layer.raw.type === 1) {
+            layer.minScale = layer.raw.minScale !== null
+                ? layer.raw.minScale
                 : 0
-            layer.maxScale = layer.raw.esri.maxScale !== null
-                ? layer.raw.esri.maxScale
+            layer.maxScale = layer.raw.maxScale !== null
+                ? layer.raw.maxScale
                 : 0
 
             logger.log(`minScale: ${layer.minScale} and maxScale: ${layer.maxScale} defined manually`)
         }
     })
 
-    global.map.add(layer)
+    return layer
 }
 
 /**
@@ -165,8 +209,7 @@ const showAll = () => {
 }
 
 export {
-    create,
-    addNew,
+    add,
     setVisibility,
     setOpacity,
     hideAll,

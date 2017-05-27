@@ -2,7 +2,7 @@
     "name": "arceasy",
     "version": "1.0.0",
     "description": "A simple library to help you work with ESRI Javascript API v4.x",
-    "main": "dist/arceasy.js",
+    "main": "dist/arceasy.min.js",
     "scripts": {
         "dev": "webpack --watch",
         "build": "webpack -p"

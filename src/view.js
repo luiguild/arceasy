@@ -55,11 +55,11 @@ const createView = (map, View, options) => {
                             elm.maxScale === 0)) &&
                             (elm.raw !== undefined &&
                             elm.visible)) {
-                        if (elm.raw.esri.type === 0) {
+                        if (elm.raw.type === 0) {
                             const urlQuery = `!xmin=${view.extent.xmin}!xmax=${view.extent.xmax}!ymin=${view.extent.ymin}!ymax=${view.extent.ymax}`
 
                             logger.log(`Getting extent to request ${elm.title}`)
-                            logger.log(`Requesting to server: ${elm.raw.esri.url}/where=${urlQuery}`)
+                            logger.log(`Requesting to server: ${elm.raw.url}/where=${urlQuery}`)
 
                             elm.definitionExpression = urlQuery
                         }
