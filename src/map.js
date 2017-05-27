@@ -217,7 +217,10 @@ const dojoLoader = () => {
             if (constructors.Map && constructors.SceneView) {
                 logger.log(`All constructorss created!`)
 
-                global.map = createMap(constructors.Map, global.options.basemap)
+                global.map = createMap(
+                    constructors.Map,
+                    global.options.basemap
+                )
 
                 global.view = createView(
                     global.map,
