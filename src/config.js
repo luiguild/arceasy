@@ -53,3 +53,8 @@ export const constructors = {
         SimpleFillSymbol: ''
     }
 }
+
+export const templates = {
+    renderers: [],
+    symbols: []
+}
