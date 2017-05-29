@@ -22,7 +22,7 @@ import { global, constructors } from './config'
  * @param  {Array} options.cors - A group of URLs that you need enable CORS
  * @param  {String} options.proxy - Single URL that will proxy your requests
  */
-const options = options => {
+export const options = options => {
     if (options) {
         options.element ||
             logger.fatal(`You need pass an valid DOM element`)
@@ -88,7 +88,7 @@ const options = options => {
  * To create your map you need invocate this function
  * @param  {String} cdn - URL to official ESRI CDN or your own ESRI CDN provided by you
  */
-const start = cdn => {
+export const start = cdn => {
     if (cdn !== undefined && global.loaded) {
         // Has the ArcGIS API been added to the page?
         if (!esriLoader.isLoaded()) {
@@ -252,9 +252,4 @@ const createMap = (Map, basemap) => {
     })
 
     return map
-}
-
-export {
-    options,
-    start
 }

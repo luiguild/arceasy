@@ -11,7 +11,7 @@ let warnCounter = 0
  * @param  {Object} _object - If you pass an object or array, it's will be put together
  * @return {Function}
  */
-const log = (message, _object) => {
+export const log = (message, _object) => {
     const object = _object !== undefined
         ? _object
         : ''
@@ -27,7 +27,7 @@ const log = (message, _object) => {
  * @param  {Object} _object - If you pass an object or array, it's will be put together
  * @return {Function}
  */
-const error = (message, _object) => {
+export const error = (message, _object) => {
     const object = _object !== undefined
         ? _object
         : ''
@@ -42,7 +42,7 @@ const error = (message, _object) => {
  * @param  {String} message - Your log text
  * @return {Function}
  */
-const fatal = (message) => {
+export const fatal = (message) => {
     fatalCounter++
 
     throw new Error(`${fatalCounter} ${prefix} ${message}`)
@@ -54,7 +54,7 @@ const fatal = (message) => {
  * @param  {Object} _object - If you pass an object or array, it's will be put together
  * @return {Function}
  */
-const warn = (message, _object) => {
+export const warn = (message, _object) => {
     const object = _object !== undefined
         ? _object
         : ''
@@ -62,11 +62,4 @@ const warn = (message, _object) => {
     warnCounter++
 
     return console.warn(`${warnCounter} ${prefix} ${message}`, object)
-}
-
-export {
-    log,
-    error,
-    fatal,
-    warn
 }

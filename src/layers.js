@@ -6,7 +6,7 @@ import { global, constructors } from './config'
  * @constructor
  * @param  {Array} layers - List of layers
  */
-const add = layers => {
+export const add = layers => {
     layers.map((layer, indx) => {
         if (validate(layer)) {
             logger.log(`Adding id by index on layer`)
@@ -150,7 +150,7 @@ const findLayer = _layer => {
  * @param  {String|Number} _layer - Layer title or ID
  * @param  {Boolean} visibility - Set if layer is visible or not
  */
-const setVisibility = (_layer, visibility) => {
+export const setVisibility = (_layer, visibility) => {
     const layer = findLayer(_layer)
 
     if (layer) {
@@ -166,7 +166,7 @@ const setVisibility = (_layer, visibility) => {
  * @param  {String|Number} _layer - Layer title or ID
  * @param  {Number} _opacity - new opacity
  */
-const setOpacity = (_layer, _opacity) => {
+export const setOpacity = (_layer, _opacity) => {
     const layer = findLayer(_layer)
 
     if (layer) {
@@ -197,21 +197,13 @@ const changeVisibility = visibility => {
 /**
  * Set visibility of all layers to false
  */
-const hideAll = () => {
+export const hideAll = () => {
     changeVisibility(false)
 }
 
 /**
  * Set visibility of all layers to true
  */
-const showAll = () => {
+export const showAll = () => {
     changeVisibility(true)
-}
-
-export {
-    add,
-    setVisibility,
-    setOpacity,
-    hideAll,
-    showAll
 }

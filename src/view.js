@@ -22,7 +22,7 @@ import { global, constructors } from './config'
  * @param  {String} options.proxy - Single URL that will proxy your requests
  * @return {Object} Global view object descriptor
  */
-const createView = (map, View, options) => {
+export const createView = (map, View, options) => {
     if (global.loaded) {
         logger.log('Creating View...')
 
@@ -125,7 +125,7 @@ const controlUI = view => {
  * @param  {Number} scale - Scale on earth
  * @param  {Object} camera - Object that contain new angles to position camera
  */
-const newPosition = ({coordinates, scale, camera}) => {
+export const newPosition = ({coordinates, scale, camera}) => {
     if (coordinates && scale && camera) {
         const view = global.view
 
@@ -155,7 +155,7 @@ const newPosition = ({coordinates, scale, camera}) => {
  *                          'streets-relief-vector', 'streets-navigation-vector'
  *                          or 'none'
  */
-const changeBasemap = basemap => {
+export const changeBasemap = basemap => {
     if (basemap) {
         const map = global.map
 
@@ -165,10 +165,4 @@ const changeBasemap = basemap => {
     } else {
         logger.error(`You need set a new basemap`)
     }
-}
-
-export {
-    createView,
-    newPosition,
-    changeBasemap
 }
