@@ -1,4 +1,4 @@
-// import * as logger from './logger'
+import * as logger from './logger'
 import { constructors, templates } from './config'
 
 /**
@@ -23,6 +23,10 @@ export const createRenderers = () => {
         },
         {
             name: 'SimpleRenderer',
+            renderer: new SimpleRenderer({})
+        },
+        {
+            name: 'GradientRenderer',
             renderer: new SimpleRenderer({})
         },
         {
@@ -57,6 +61,82 @@ export const createRenderers = () => {
 }
 
 /**
+ * [getRenderer description]
+ * @param  {[type]} type      [description]
+ * @param  {[type]} _renderer [description]
+ * @return {[type]}           [description]
+ */
+const getRenderer = _renderer => {
+    return templates.renderers.filter(renderer => {
+        if (renderer.name === _renderer) {
+            return true
+        }
+    })
+}
+
+/**
+ * [getSymbol description]
+ * @param  {[type]} _renderer [description]
+ * @return {[type]}           [description]
+ */
+const getSymbol = _symbol => {
+    return templates.symbols.filter(symbol => {
+        if (symbol.name === _symbol) {
+            return true
+        }
+    })
+}
+
+/**
+ * [hexToRgb description]
+ * @param  {[type]} hex [description]
+ * @return {[type]}     [description]
+ */
+const hexToRgb = hex => {
+    const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+
+    hex = hex.replace(shorthandRegex, function (m, r, g, b) {
+        return r + r + g + g + b + b
+    })
+
+    return result ? [
+        parseInt(result[1], 16),
+        parseInt(result[2], 16),
+        parseInt(result[3], 16),
+        255
+    ] : null
+}
+
+/**
+ * [rgbToHex description]
+ * @param  {[type]} rgb [description]
+ * @return {[type]}     [description]
+ */
+// const rgbToHex = rgb => {
+//     let hexaColor
+//
+//     rgb = rgb.match(/[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i)
+//     if (rgb) {
+//         hexaColor = '#' +
+//             ('0' + parseInt(rgb[1], 10).toString(16)).slice(-2) +
+//             ('0' + parseInt(rgb[2], 10).toString(16)).slice(-2) +
+//             ('0' + parseInt(rgb[3], 10).toString(16)).slice(-2)
+//     }
+//
+//     return hexaColor
+// }
+
+/**
+ * Recieve exa color like #FFF, convert to RGB and parse to JSON format
+ * @param  {String} color - Exa color
+ * @return {Object} Parsed RGB color
+ */
+const parseColor = color => {
+    return JSON.parse(`[${hexToRgb(color)}]`)
+}
+
+/**
  * [setRenderer description]
  * @param {[type]} _layer     [description]
  * @param {[type]} _renderer  [description]
@@ -67,226 +147,224 @@ export const createRenderers = () => {
  * @param {[type]} line       [description]
  * @param {[type]} fill       [description]
  */
-// export const setRenderer = ({_layer, _renderer, classes, field, extrude, multiplier, line, fill}) => {
-//     const geometryType = _layer.geometryType
-//
-//     const pureRenderer = templates.renderers.filter(renderer => {
-//         if (renderer.name === _renderer) {
-//             return true
-//         }
-//     })
-//     const newRenderer = Object.create(pureRenderer)
-//     newRenderer.visualVariables = []
-//     newRenderer.classBreakInfos = []
-//     newRenderer.symbol = ''
-//
-//     logger.log(`Create a new renderer using template: ${_renderer}`)
-//
-//     if (line.color === '' ||
-//         line.color === undefined ||
-//         !line.color) {
-//         line.color = '#ffffff'
-//     }
-//
-//     if (extrude) {
-//         const info = {
-//             type: 'size',
-//             field: extrude,
-//             label: '',
-//             valueExpression: `$feature.${extrude} * ${multiplier}`
-//         }
-//
-//         const symbolName = templates.symbols[0]['name']
-//         const pureSymbol = templates.symbols[0]['symbol']
-//
-//         logger.log(`Create a new symbol using template: ${symbolName}`)
-//
-//         newRenderer.symbol = Object.create(pureSymbol)
-//
-//         if (newRenderer.visualVariables.length > 0) {
-//             newRenderer.visualVariables.push(info)
-//         } else {
-//             newRenderer.visualVariables = [info]
-//         }
-//
-//         // console.log(JSON.stringify(info))
-//     }
-//
-//     if (geometryType === 'polygon') {
-//         if (_renderer === 'ClassBreaksRenderer') {
-//             if (fill.length > 0 && fill !== undefined) {
-//                 const info = []
-//                 const symbolValue = {}
-//
-//                 newRenderer.field = field
-//
-//                 for (let i = 0; i < classes; i++) {
-//                     if (!fill[i]) {
-//                         return
-//                     }
-//
-//                     if (!newRenderer.symbol) {
-//                         const symbolName = templates.symbols[1]['name']
-//                         const pureSymbol = templates.symbols[1]['symbol']
-//                         const symbolValue = pureSymbol.clone()
-//
-//                         logger.log(`Create a new symbol using template: ${symbolName}`)
-//
-//                         symbolValue.color = JSON.parse('[' + this.hexToRgb(fill[i]) + ']')
-//                         symbolValue.outline.color = JSON.parse('[' + this.hexToRgb(line.color) + ']')
-//                         symbolValue.outline.width = line.width
-//                     } else {
-//                         const symbolName = templates.symbols[0]['name']
-//                         const pureSymbol = templates.symbols[0]['symbol']
-//                         const symbolValue = pureSymbol.clone()
-//
-//                         logger.log(`Create a new symbol using template: ${symbolName}`)
-//
-//                         symbolValue.symbolLayers.items[0].material = {
-//                             color: JSON.parse('[' + this.hexToRgb(fill[i]) + ']')
-//                         }
-//                     }
-//
-//                     info.push({
-//                         minValue: parseInt(classes[i].min),
-//                         maxValue: parseInt(classes[i].max),
-//                         symbol: symbolValue
-//                     })
-//                 }
-//                 newRenderer.classBreakInfos = info
-//                 // console.log(JSON.stringify(info))
-//             }
-//         } else if (_renderer === 'SimpleRenderer' && this.renderers === '5') {
-//             if (fill.length > 0 && fill !== undefined) {
-//                 let arrayDoColorDeCu = {
-//                         type: 'color',
-//                         field: this.selectedFieldsOnMap,
-//                         stops: []
-//                     },
-//                     classValue
-//
-//                 newRenderer.field = this.selectedFieldsOnMap
-//
-//                 if (!newRenderer.symbol) {
-//                     logger.log('Create a new symbol using template: ' + this.computedSymbols[1]['name'])
-//                     pureSymbol = this.computedSymbols[1]['obj']['symbol']
-//                     newRenderer.symbol = pureSymbol.clone()
-//                     newRenderer.symbol.outline.color = JSON.parse('[' + this.hexToRgb(this.inputLineColor) + ']')
-//                     newRenderer.symbol.outline.width = this.line.width
-//                 }
-//
-//                 newRenderer.label = ''
-//
-//                 for (let i = 0; i < this.classesNumber; i++) {
-//                     if (!fill[i]) {
-//                         return
-//                     }
-//
-//                     if (this.manualColors[i].value !== undefined) {
-//                         if (this.typeClassValue === 'number') {
-//                             classValue = parseInt(this.manualColors[i].value)
-//                         } else if (this.typeClassValue === 'text') {
-//                             classValue = this.manualColors[i].value.toString()
-//                         }
-//                     }
-//
-//                     arrayDoColorDeCu.stops.push({
-//                         value: classValue,
-//                         color: JSON.parse('[' + this.hexToRgb(fill[i]) + ']'),
-//                         label: this.manualColors[i].label ? this.manualColors[i].label : ''
-//                     })
-//                 }
-//
-//                 if (newRenderer.visualVariables.length > 0) {
-//                     newRenderer.visualVariables.push(arrayDoColorDeCu)
-//                 } else {
-//                     newRenderer.visualVariables = [arrayDoColorDeCu]
-//                 }
-//
-//                 // console.log(JSON.stringify([arrayDoColorDeCu]))
-//             }
-//         } else if (_renderer === 'SimpleRenderer') {
-//             if (this.inputSimpleFillColor !== '' && fill !== undefined) {
-//                 if (!newRenderer.symbol) {
-//                     logger.log('Create a new symbol using template: ' + this.computedSymbols[1]['name'])
-//                     pureSymbol = this.computedSymbols[1]['obj']['symbol']
-//                     newRenderer.symbol = pureSymbol.clone()
-//
-//                     newRenderer.symbol.outline.color = JSON.parse('[' + this.hexToRgb(this.inputLineColor) + ']')
-//                     newRenderer.symbol.outline.width = this.line.width
-//                     newRenderer.symbol.color = JSON.parse('[' + this.hexToRgb(this.inputSimpleFillColor) + ']')
-//                 } else {
-//                     newRenderer.symbol.symbolLayers.items[0].material = {
-//                         color: JSON.parse('[' + this.hexToRgb(this.inputSimpleFillColor) + ']')
-//                     }
-//                 }
-//             }
-//         } else if (_renderer === 'UniqueValueRenderer') {
-//             if (fill.length > 0 && fill !== undefined) {
-//                 let arrayUnicoDeCu = [],
-//                     classValue,
-//                     symbolValue = {}
-//
-//                logger.log('Create a new symbol using template: ' + this.computedSymbols[1]['name'])
-//                 newRenderer.field = this.selectedFieldsOnMap
-//
-//                 for (let i = 0; i < this.classesNumber; i++) {
-//                     if (this.manualColors[i].value !== undefined) {
-//                         if (this.typeClassValue === 'number') {
-//                             classValue = parseInt(this.manualColors[i].value)
-//                         } else if (this.typeClassValue === 'text') {
-//                             classValue = this.manualColors[i].value.toString()
-//                         }
-//                     }
-//
-//                     if (!newRenderer.symbol) {
-//                         logger.log('Create a new symbol using template: ' + this.computedSymbols[1]['name'])
-//                         pureSymbol = this.computedSymbols[1]['obj']['symbol']
-//                         symbolValue = pureSymbol.clone()
-//                         symbolValue.color = JSON.parse('[' + this.hexToRgb(fill[i]) + ']')
-//                         symbolValue.outline.color = JSON.parse('[' + this.hexToRgb(this.inputLineColor) + ']')
-//                         symbolValue.outline.width = this.line.width
-//                     } else {
-//                         pureSymbol = this.computedSymbols[0]['obj']['defaultSymbol']
-//                         symbolValue = pureSymbol.clone()
-//                         symbolValue.symbolLayers.items[0].material = {
-//                             color: JSON.parse('[' + this.hexToRgb(fill[i]) + ']')
-//                         }
-//                     }
-//
-//                     arrayUnicoDeCu.push({
-//                         value: classValue,
-//                         symbol: symbolValue
-//                     })
-//                 }
-//                 newRenderer.uniqueValueInfos = arrayUnicoDeCu
-//                 // console.log(JSON.stringify(arrayUnicoDeCu))
-//             }
-//         }
-//     } else if (geometryType === 'point') {
-//         if (_renderer === 'SimpleRenderer') {
-//             if (this.inputSimpleFillColor !== '' && fill !== undefined) {
-//                 if (!newRenderer.symbol) {
-//                     logger.log('Create a new symbol using template: ' + this.computedSymbols[2]['name'])
-//                     pureSymbol = this.computedSymbols[2]['obj']['symbol']
-//                     newRenderer.symbol = pureSymbol.clone()
-//
-//                     newRenderer.symbol.outline.color = JSON.parse('[' + this.hexToRgb(this.inputLineColor) + ']')
-//                     newRenderer.symbol.outline.width = this.line.width
-//                     newRenderer.symbol.color = JSON.parse('[' + this.hexToRgb(this.inputSimpleFillColor) + ']')
-//                 } else {
-//                     newRenderer.symbol.symbolLayers.items[0].material = {
-//                         color: JSON.parse('[' + this.hexToRgb(this.inputSimpleFillColor) + ']')
-//                     }
-//                 }
-//             }
-//         }
-//     }
-//
-//     console.log(JSON.stringify(newRenderer))
-//
-//     this.addRendererOnLayer({
-//         index: this.computedLayerSelected,
-//         rendererTemplate: newRenderer
-//     })
-// }
+export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _multiplier}) => {
+    // If any conditions isn't found, abort
+    if (!_layer ||
+        !_renderer ||
+        !_field) {
+        logger.log(`You need set a layer, a renderer and one data field at minimum`)
+        return
+    }
+
+    if (!_classes.length > 0) {
+        logger.log(`You need set some classes`)
+        return
+    }
+
+    if (!_classes[0].fill.color) {
+        logger.log(`You need set one class with color`)
+        return
+    }
+
+    if (_layer.raw.type === 0) {
+        // Construct some variables
+        const geometryType = _layer.geometryType
+        const pureRenderer = getRenderer(_renderer)
+        const newRenderer = Object.create(pureRenderer)
+
+        let Symbol
+        let newSymbol
+
+        logger.log(`Create a new renderer using template: ${_renderer}`)
+
+        // Create newRederer instance
+        newRenderer['visualVariables'] = []
+        newRenderer['classBreakInfos'] = []
+        newRenderer['uniqueValueInfos'] = []
+        newRenderer['symbol'] = ''
+        newRenderer['field'] = _field
+        newRenderer['label'] = ''
+
+        // Get geometry from layer
+        if (geometryType === 'polygon') {
+            Symbol = getSymbol('SimpleFillSymbol')
+            logger.log(`Applying Simple Polygon Symbol`)
+        } else if (geometryType === 'point') {
+            Symbol = getSymbol('SimpleMarkerSymbol')
+            logger.log(`Applying Simple Marker Symbol`)
+        }
+
+        // If 3D option is enabled
+        if (_extrude) {
+            const info = {
+                type: 'size',
+                field: _extrude,
+                label: '',
+                valueExpression: `$feature.${_extrude} * ${_multiplier}`
+            }
+
+            logger.log('Applying 3D Symbol')
+
+            Symbol = getSymbol('PolygonSymbol3D')
+            newRenderer.symbol = Object.create(Symbol)
+            newRenderer.visualVariables.push(info)
+        }
+
+        // classBreaksRenderer
+        if (_renderer === 'ClassBreaksRenderer') {
+            _classes.forEach((elm, indx) => {
+                const fillColor = parseColor(elm.fill.color)
+                const outilineColor = parseColor(elm.outline.color)
+                const outlineWidth = elm.outline.width
+                const pointSize = parseInt(elm.point.size)
+                const pointStyle = elm.point.style
+
+                if (!newRenderer.symbol) {
+                    newSymbol = Symbol.clone()
+                    newSymbol.color = fillColor
+                    newSymbol.outline.color = outilineColor
+                    newSymbol.outline.width = outlineWidth
+
+                    if (geometryType === 'point') {
+                        newSymbol.size = pointSize
+                        newSymbol.style = pointStyle
+                    }
+                } else {
+                    newSymbol = Symbol.clone()
+                    newSymbol.symbolLayers.items[0].material = {
+                        color: fillColor
+                    }
+                }
+
+                newRenderer.classBreakInfos.push({
+                    minValue: parseInt(elm.min),
+                    maxValue: parseInt(elm.max),
+                    symbol: newSymbol
+                })
+            })
+        }
+
+        // GradientRenderer
+        if (_renderer === 'GradientRenderer') {
+            const outilineColor = parseColor(_classes[0].outline.color)
+            const outlineWidth = _classes[0].outline.width
+            const pointSize = parseInt(_classes[0].point.size)
+            const pointStyle = _classes[0].point.style
+            const info = {
+                type: 'color',
+                field: _field,
+                stops: []
+            }
+
+            let classValue
+
+            if (!newRenderer.symbol) {
+                newSymbol = Symbol.clone()
+                newSymbol.outline.color = outilineColor
+                newSymbol.outline.width = outlineWidth
+
+                if (geometryType === 'point') {
+                    newSymbol.size = pointSize
+                    newSymbol.style = pointStyle
+                }
+            }
+
+            _classes.forEach((elm, indx) => {
+                const fillColor = parseColor(elm.fill.color)
+
+                if (elm.value.content !== undefined) {
+                    if (elm.value.type === 'number') {
+                        classValue = parseInt(elm.value.content)
+                    } else if (elm.value.type === 'text') {
+                        classValue = elm.value.content.toString()
+                    }
+                }
+
+                info.stops.push({
+                    value: classValue,
+                    color: fillColor,
+                    label: elm.label || ''
+                })
+            })
+
+            newRenderer.visualVariables.push(info)
+        }
+
+        // SimpleRenderer
+        if (_renderer === 'SimpleRenderer') {
+            const fillColor = parseColor(_classes[0].fill.color)
+            const outilineColor = parseColor(_classes[0].outline.color)
+            const outlineWidth = _classes[0].outline.width
+            const pointSize = parseInt(_classes[0].point.size)
+            const pointStyle = _classes[0].point.style
+
+            if (!newRenderer.symbol) {
+                newSymbol = Symbol.clone()
+                newSymbol.color = fillColor
+                newSymbol.outline.color = outilineColor
+                newSymbol.outline.width = outlineWidth
+
+                if (geometryType === 'point') {
+                    newSymbol.size = pointSize
+                    newSymbol.style = pointStyle
+                }
+            } else {
+                newSymbol.symbolLayers.items[0].material = {
+                    color: fillColor
+                }
+            }
+        }
+
+        // UniqueValueRenderer
+        if (_renderer === 'UniqueValueRenderer') {
+            let classValue
+
+            _classes.forEach((elm, indx) => {
+                const fillColor = parseColor(elm.fill.color)
+                const outilineColor = parseColor(elm.outline.color)
+                const outlineWidth = elm.outline.width
+                const pointSize = parseInt(elm.point.size)
+                const pointStyle = elm.point.style
+
+                if (elm.value.content !== undefined) {
+                    if (elm.value.type === 'number') {
+                        classValue = parseInt(elm.value.content)
+                    } else if (elm.value.type === 'text') {
+                        classValue = elm.value.content.toString()
+                    }
+                }
+
+                if (!newRenderer.symbol) {
+                    newSymbol = Symbol.clone()
+                    newSymbol.color = fillColor
+                    newSymbol.outline.color = outilineColor
+                    newSymbol.outline.width = outlineWidth
+
+                    if (geometryType === 'point') {
+                        newSymbol.size = pointSize
+                        newSymbol.style = pointStyle
+                    }
+                } else {
+                    newSymbol = Symbol.clone()
+                    newSymbol.symbolLayers.items[0].material = {
+                        color: fillColor
+                    }
+                }
+
+                newRenderer.uniqueValueInfos.push({
+                    value: classValue,
+                    symbol: newSymbol
+                })
+            })
+        }
+
+        // Atribute the final instance of newSymbol on newRenderer
+        newRenderer.symbol = newSymbol
+
+        console.log(JSON.stringify(newRenderer))
+
+        // Set renderer on layer
+        const renderer = newRenderer.clone()
+        _layer.renderer = Object.create(renderer)
+    }
+}
