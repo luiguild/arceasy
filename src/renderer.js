@@ -2,8 +2,8 @@ import * as logger from './logger'
 import { constructors, templates } from './config'
 
 /**
- * [createRenderers description]
- * @return {[type]} [description]
+ * Simple function to retrieve the renderers and symbols contructors
+ * and apply on templates config global variables
  */
 export const createRenderers = () => {
     const UniqueValueRenderer = constructors.uniqueValueRenderer
@@ -61,10 +61,9 @@ export const createRenderers = () => {
 }
 
 /**
- * [getRenderer description]
- * @param  {[type]} type      [description]
- * @param  {[type]} _renderer [description]
- * @return {[type]}           [description]
+ * Get renderer on template by name
+ * @param  {String} _renderer - Name of the rendereder
+ * @return {Object} Renderer constructor template
  */
 const getRenderer = _renderer => {
     return templates.renderers.filter(renderer => {
@@ -75,10 +74,10 @@ const getRenderer = _renderer => {
 }
 
 /**
- * [getSymbol description]
- * @param  {[type]} _renderer [description]
- * @return {[type]}           [description]
- */
+ * Get symbol on template by name
+ * @param  {String} _symbol - Name of the symbol
+ * @return {Object} Symbol constructor template
+*/
 const getSymbol = _symbol => {
     return templates.symbols.filter(symbol => {
         if (symbol.name === _symbol) {
@@ -88,11 +87,11 @@ const getSymbol = _symbol => {
 }
 
 /**
- * [hexToRgb description]
- * @param  {[type]} hex [description]
- * @return {[type]}     [description]
+ * Simnple function to convert hexa color to RGBA
+ * @param  {String} hex - Hexa color
+ * @return {Array} The RGBA final color
  */
-const hexToRgb = hex => {
+const hexToRgbA = hex => {
     const shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
 
@@ -109,60 +108,57 @@ const hexToRgb = hex => {
 }
 
 /**
- * [rgbToHex description]
- * @param  {[type]} rgb [description]
- * @return {[type]}     [description]
- */
-// const rgbToHex = rgb => {
-//     let hexaColor
-//
-//     rgb = rgb.match(/[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?,[\s+]?(\d+)[\s+]?/i)
-//     if (rgb) {
-//         hexaColor = '#' +
-//             ('0' + parseInt(rgb[1], 10).toString(16)).slice(-2) +
-//             ('0' + parseInt(rgb[2], 10).toString(16)).slice(-2) +
-//             ('0' + parseInt(rgb[3], 10).toString(16)).slice(-2)
-//     }
-//
-//     return hexaColor
-// }
-
-/**
- * Recieve exa color like #FFF, convert to RGB and parse to JSON format
+ * Recieve exa color like #FFF, convert to RGBA and parse to JSON format
  * @param  {String} color - Exa color
- * @return {Object} Parsed RGB color
+ * @return {Object} Parsed RGBA color
  */
 const parseColor = color => {
-    return JSON.parse(`[${hexToRgb(color)}]`)
+    return JSON.parse(`[${hexToRgbA(color)}]`)
 }
 
 /**
- * [setRenderer description]
- * @param {[type]} _layer     [description]
- * @param {[type]} _renderer  [description]
- * @param {[type]} classes    [description]
- * @param {[type]} field      [description]
- * @param {[type]} extrude    [description]
- * @param {[type]} multiplier [description]
- * @param {[type]} line       [description]
- * @param {[type]} fill       [description]
+ * A big function to set dynamically renderer on layer
+ * This function support these Renderers
+ * 'UniqueValueRenderer'
+ * 'SimpleRenderer'
+ * 'GradientRenderer'
+ * 'ClassBreaksRenderer'
+ * And these symbols
+ * 'PolygonSymbol3D'
+ * 'SimpleFillSymbol'
+ * 'SimpleMarkerSymbol'
+ * @param {Object} _layer - The complete layer object on map
+ * @param {String} _renderer - The renderer name can be: UniqueValueRenderer / SimpleRenderer / GradientRenderer
+ * @param {Array} _classes - Array that describes all information about your data classes
+ * @param {String} _classes[].fill.color - The color fill information about the class index
+ * @param {String} _classes[].outline.color - The outline color information
+ * @param {Number} _classes[].outline.width - The outline width information
+ * @param {Number} _classes[].point.size - If layer geometry is Point this will describe tha size of these points
+ * @param {String} _classes[].point.style - The point style can be: Circle / Cross / Diamond / Square
+ * @param {Number} _classes[].min - This min value will be used to create range starting at this point
+ * @param {Number} _classes[].max - This max value will be used to create range ending at this point
+ * @param {String} _classes[].value - This value will be used to set unique information about this class
+ * @param {String} _classes[].label - The label can be used in layer subtitles
+ * @param {String} _field - The data field layer that map will consume information to apply the rederer
+ * @param {String} _extrude - The data field layer that map will extract information about extrusion
+ * @param {Number} _multiplier - This number will used on create a math expression to extrude your information
  */
 export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _multiplier}) => {
     // If any conditions isn't found, abort
     if (!_layer ||
         !_renderer ||
         !_field) {
-        logger.log(`You need set a layer, a renderer and one data field at minimum`)
+        logger.error(`You need set a layer, a renderer and one data field at minimum`)
         return
     }
 
     if (!_classes.length > 0) {
-        logger.log(`You need set some classes`)
+        logger.error(`You need set some classes`)
         return
     }
 
     if (!_classes[0].fill.color) {
-        logger.log(`You need set one class with color`)
+        logger.error(`You need set one class with color`)
         return
     }
 
@@ -216,8 +212,6 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
                 const fillColor = parseColor(elm.fill.color)
                 const outilineColor = parseColor(elm.outline.color)
                 const outlineWidth = elm.outline.width
-                const pointSize = parseInt(elm.point.size)
-                const pointStyle = elm.point.style
 
                 if (!newRenderer.symbol) {
                     newSymbol = Symbol.clone()
@@ -226,6 +220,9 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
                     newSymbol.outline.width = outlineWidth
 
                     if (geometryType === 'point') {
+                        const pointSize = parseInt(elm.point.size)
+                        const pointStyle = elm.point.style
+
                         newSymbol.size = pointSize
                         newSymbol.style = pointStyle
                     }
@@ -248,8 +245,6 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
         if (_renderer === 'GradientRenderer') {
             const outilineColor = parseColor(_classes[0].outline.color)
             const outlineWidth = _classes[0].outline.width
-            const pointSize = parseInt(_classes[0].point.size)
-            const pointStyle = _classes[0].point.style
             const info = {
                 type: 'color',
                 field: _field,
@@ -264,6 +259,9 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
                 newSymbol.outline.width = outlineWidth
 
                 if (geometryType === 'point') {
+                    const pointSize = parseInt(_classes[0].point.size)
+                    const pointStyle = _classes[0].point.style
+
                     newSymbol.size = pointSize
                     newSymbol.style = pointStyle
                 }
@@ -295,8 +293,6 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
             const fillColor = parseColor(_classes[0].fill.color)
             const outilineColor = parseColor(_classes[0].outline.color)
             const outlineWidth = _classes[0].outline.width
-            const pointSize = parseInt(_classes[0].point.size)
-            const pointStyle = _classes[0].point.style
 
             if (!newRenderer.symbol) {
                 newSymbol = Symbol.clone()
@@ -305,6 +301,9 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
                 newSymbol.outline.width = outlineWidth
 
                 if (geometryType === 'point') {
+                    const pointSize = parseInt(_classes[0].point.size)
+                    const pointStyle = _classes[0].point.style
+
                     newSymbol.size = pointSize
                     newSymbol.style = pointStyle
                 }
@@ -323,8 +322,6 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
                 const fillColor = parseColor(elm.fill.color)
                 const outilineColor = parseColor(elm.outline.color)
                 const outlineWidth = elm.outline.width
-                const pointSize = parseInt(elm.point.size)
-                const pointStyle = elm.point.style
 
                 if (elm.value.content !== undefined) {
                     if (elm.value.type === 'number') {
@@ -341,6 +338,9 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
                     newSymbol.outline.width = outlineWidth
 
                     if (geometryType === 'point') {
+                        const pointSize = parseInt(elm.point.size)
+                        const pointStyle = elm.point.style
+
                         newSymbol.size = pointSize
                         newSymbol.style = pointStyle
                     }
@@ -361,10 +361,10 @@ export const setRenderer = ({_layer, _renderer, _classes, _field, _extrude, _mul
         // Atribute the final instance of newSymbol on newRenderer
         newRenderer.symbol = newSymbol
 
-        console.log(JSON.stringify(newRenderer))
-
         // Set renderer on layer
         const renderer = newRenderer.clone()
         _layer.renderer = Object.create(renderer)
+
+        logger.log('New renderer was created!', JSON.stringify(newRenderer))
     }
 }

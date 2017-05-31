@@ -126,38 +126,45 @@ const dojoLoader = () => {
         esriLoader.dojoRequire([
             'esri/config',
             'esri/Map',
-            'esri/geometry/Geometry',
+            'esri/Graphic',
             'esri/Camera',
-            'esri/geometry/Extent',
+
             'esri/views/SceneView',
+
             'esri/layers/FeatureLayer',
             'esri/layers/TileLayer',
             'esri/layers/GraphicsLayer',
+
             'esri/core/watchUtils',
             'esri/core/Collection',
+
             'esri/renderers/UniqueValueRenderer',
             'esri/renderers/ClassBreaksRenderer',
             'esri/renderers/SimpleRenderer',
+            'esri/renderers/support/jsonUtils',
+
             'esri/symbols/ExtrudeSymbol3DLayer',
             'esri/symbols/PolygonSymbol3D',
             'esri/symbols/SimpleMarkerSymbol',
             'esri/symbols/PictureMarkerSymbol',
             'esri/symbols/SimpleLineSymbol',
             'esri/symbols/SimpleFillSymbol',
-            'esri/Graphic',
-            'esri/geometry/Point',
             'esri/symbols/PointSymbol3D',
             'esri/symbols/ObjectSymbol3DLayer',
+
+            'esri/geometry/Geometry',
+            'esri/geometry/Point',
+            'esri/geometry/Extent',
+
             'esri/widgets/Search',
-            'esri/renderers/support/jsonUtils',
+
             'dojo/on',
             'dojo/domReady!'
         ], (
             esriConfig,
             Map,
-            Geometry,
+            Graphic,
             Camera,
-            Extent,
             SceneView,
             FeatureLayer,
             TileLayer,
@@ -167,18 +174,19 @@ const dojoLoader = () => {
             UniqueValueRenderer,
             ClassBreaksRenderer,
             SimpleRenderer,
+            jsonUtils,
             ExtrudeSymbol3DLayer,
             PolygonSymbol3D,
             SimpleMarkerSymbol,
             PictureMarkerSymbol,
             SimpleLineSymbol,
             SimpleFillSymbol,
-            Graphic,
-            Point,
             PointSymbol3D,
             ObjectSymbol3DLayer,
+            Geometry,
+            Point,
+            Extent,
             Search,
-            jsonUtils,
             on
         ) => {
             global.options.cors.forEach(elm => {
