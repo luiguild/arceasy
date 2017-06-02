@@ -15,10 +15,10 @@ import { global, constructors } from './config'
  * @param  {String} options.basemap - Initial basemap
  * @param  {Boolean} options.stars - If stars is enabled
  * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
- * @param  {Boolean} options.atmosphere.quality - Atmosphere quality
+ * @param  {String} options.atmosphere.quality - Atmosphere quality
  * @param  {Boolean} options.search.enable - If search is enabled
- * @param  {Boolean} options.search.position - Search position
- * @param  {Boolean} options.search.index - Search index
+ * @param  {String} options.search.position - Search position
+ * @param  {Number} options.search.index - Search index
  * @param  {Array} options.cors - A group of URLs that you need enable CORS
  * @param  {String} options.proxy - Single URL that will proxy your requests
  */
@@ -72,7 +72,15 @@ export const options = options => {
             },
             basemap: options.basemap || global.options.basemap,
             stars: options.stars || global.options.stars,
-            atmosphere: options.atmosphere || global.options.atmosphere,
+            atmosphere: {
+                enable: options.atmosphere.enable || global.options.atmosphere.enable,
+                quality: options.atmosphere.quality || global.options.atmosphere.quality
+            },
+            search: {
+                enable: options.search.enable || global.options.search.enable,
+                position: options.search.position || global.options.search.position,
+                index: options.search.index || global.options.search.index
+            },
             cors: options.cors || '',
             proxy: options.proxy || ''
         }

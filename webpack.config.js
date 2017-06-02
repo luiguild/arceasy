@@ -3,12 +3,15 @@ const path = require('path')
 
 const config = {
     context: path.resolve(__dirname, 'src'),
-    entry: './index.js',
+    entry: {
+        browser: './index.js'
+    },
     devtool: 'source-map',
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'arceasy.min.js',
-        sourceMapFilename: '[file].map'
+        sourceMapFilename: '[file].map',
+        libraryTarget: 'commonjs-module'
     },
     module: {
         rules: [{
