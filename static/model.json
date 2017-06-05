@@ -1,12 +1,25 @@
 {
     "layers": [
         {
+            "id": 0,
             "title": "",
-            "visible": true,
+            "visible": false,
             "type": 0,
             "url": "",
             "definitionExpression": "",
-            "renderer": {}
+            "timeable": {
+				"enable": false,
+				"initialDate": "",
+				"initialTime": "",
+				"endDate": "",
+				"endTime": "",
+				"minDate": "",
+				"minTime": "",
+				"maxDate": "",
+				"maxTime": ""
+			},
+            "renderer": {},
+            "popupTemplate": {}
         }
     ]
 }

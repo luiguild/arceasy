@@ -9,8 +9,12 @@ import { global, constructors } from './config'
 export const add = layers => {
     layers.map((layer, indx) => {
         if (validate(layer)) {
-            logger.log(`Adding id by index on layer`)
-            layer.id = indx
+            if (layer.id === undefined ||
+                layer.id === '' ||
+                !layer.id) {
+                logger.log(`Adding id by index on layer`)
+                layer.id = indx
+            }
 
             global.map.add(create(layer))
         }
