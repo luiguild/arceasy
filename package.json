@@ -1,0 +1,51 @@
+{
+    "name": "arceasy",
+    "version": "1.0.5",
+    "description": "A simple library to help you work with ESRI Javascript API v4.x",
+    "main": "dist/arceasy.min.js",
+    "scripts": {
+        "dev": "webpack --watch",
+        "build": "webpack -p"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/luiguild/arceasy.git"
+    },
+    "keywords": [
+        "arcgis",
+        "arceasy",
+        "esrijs",
+        "esri",
+        "esri 4",
+        "esri v4",
+        "gis",
+        "mapping",
+        "geodevelopment"
+    ],
+    "author": "Luigui Delyer",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/luiguild/arceasy/issues"
+    },
+    "homepage": "https://github.com/luiguild/arceasy#readme",
+    "devDependencies": {
+        "babel-core": "^6.0.0",
+        "babel-eslint": "^7.0.0",
+        "babel-loader": "^7.0.0",
+        "babel-plugin-transform-runtime": "^6.0.0",
+        "babel-preset-es2015": "^6.0.0",
+        "babel-preset-stage-2": "^6.0.0",
+        "babel-register": "^6.0.0",
+        "eslint": "^3.7.1",
+        "eslint-config-standard": "^6.1.0",
+        "eslint-friendly-formatter": "^2.0.5",
+        "eslint-loader": "^1.5.0",
+        "eslint-plugin-html": "^1.3.0",
+        "eslint-plugin-promise": "^3.4.0",
+        "eslint-plugin-standard": "^2.0.1",
+        "esri-loader": "^1.0.0",
+        "uglifyjs-webpack-plugin": "^0.4.3",
+        "webpack": "^2.6.1"
+    },
+    "dependencies": {}
+}
