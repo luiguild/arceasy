@@ -1,9 +1,10 @@
-export const prefix = '[ArcEasy]'
+export const prefix = 'ArcEasy'
 
 export const global = {
     map: '',
     view: '',
     options: {
+        cdn: 'https://js.arcgis.com/4.3/',
         element: '',
         scale: 25000000,
         center: {

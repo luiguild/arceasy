@@ -7,6 +7,7 @@ import { global, constructors } from './config'
  * @param  {Function} View - ESRI View constructor
  * @param  {Object} options - Group of informations about your
  *                            app and how map will be
+ * @param  {String} options.cdn - ESRI CDN Server
  * @param  {String} options.element - DOM element that map will be created
  * @param  {Number} options.scale - Initial map scale
  * @param  {Number} options.center.longitude - Center map Longitude
@@ -14,10 +15,10 @@ import { global, constructors } from './config'
  * @param  {String} options.basemap - Initial basemap
  * @param  {Boolean} options.stars - If stars is enabled
  * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
- * @param  {Boolean} options.atmosphere.quality - Atmosphere quality
+ * @param  {String} options.atmosphere.quality - Atmosphere quality
  * @param  {Boolean} options.search.enable - If search is enabled
- * @param  {Boolean} options.search.position - Search position
- * @param  {Boolean} options.search.index - Search index
+ * @param  {String} options.search.position - Search position
+ * @param  {Number} options.search.index - Search index
  * @param  {Array} options.cors - A group of URLs that you need enable CORS
  * @param  {String} options.proxy - Single URL that will proxy your requests
  * @return {Object} Global view object descriptor
@@ -31,12 +32,12 @@ export const createView = (map, View, options) => {
             map: map,
             scale: options.scale,
             center: [
-                options.longitude,
-                options.latitude
+                options.center.longitude,
+                options.center.latitude
             ],
             viewingMode: 'global',
             starsEnabled: options.stars,
-            atmosphereEnabled: options.atmosphere
+            atmosphereEnabled: options.atmosphere.enable
         })
 
         view.then(() => {

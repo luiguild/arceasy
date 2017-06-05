@@ -18,7 +18,7 @@ export const log = (message, _object) => {
 
     logCounter++
 
-    return console.log(`${logCounter} ${prefix} ${message}`, object)
+    return console.log(`${logCounter} [LOG|${prefix}] ${message}`, object)
 }
 
 /**
@@ -34,7 +34,7 @@ export const error = (message, _object) => {
 
     errorCounter++
 
-    return console.error(`${errorCounter} ${prefix} ${message}`, object)
+    return console.error(`${errorCounter} [ERROR|${prefix}] ${message}`, object)
 }
 
 /**
@@ -45,7 +45,7 @@ export const error = (message, _object) => {
 export const fatal = (message) => {
     fatalCounter++
 
-    throw new Error(`${fatalCounter} ${prefix} ${message}`)
+    throw new Error(`${fatalCounter} [FATAL|${prefix}] ${message}`)
 }
 
 /**
@@ -61,5 +61,5 @@ export const warn = (message, _object) => {
 
     warnCounter++
 
-    return console.warn(`${warnCounter} ${prefix} ${message}`, object)
+    return console.warn(`${warnCounter} [WARN|${prefix}] ${message}`, object)
 }

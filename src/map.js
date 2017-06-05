@@ -8,6 +8,7 @@ import { global, constructors } from './config'
  * To start using ArcEasy you need invocate this function first
  * @param  {Object} options - Group of informations about your
  *                            app and how map will be
+ * @param  {String} options.cdn - ESRI CDN Server
  * @param  {String} options.element - DOM element that map will be created
  * @param  {Number} options.scale - Initial map scale
  * @param  {Number} options.center.longitude - Center map Longitude
@@ -24,68 +25,89 @@ import { global, constructors } from './config'
  */
 export const options = options => {
     if (options) {
+        options.cdn ||
+            logger.warn(`You not set any ESRI CDN. Usign default: ${global.options.cdn}`)
+
         options.element ||
             logger.fatal(`You need pass an valid DOM element`)
 
         options.scale ||
             logger.warn(`You not set scale. Usign default scale: ${global.options.scale}`)
 
-        options.center.longitude ||
-            logger.warn(`You not set intial longitude. Usign default: ${global.options.longitude}`)
+        if (options.center) {
+            options.center.longitude ||
+                logger.warn(`You not set intial longitude. Usign default: ${global.options.center.longitude}`)
 
-        options.center.latitude ||
-            logger.warn(`You not set intial latitude. Usign default: ${global.options.latitude}`)
+            options.center.latitude ||
+                logger.warn(`You not set intial latitude. Usign default: ${global.options.center.latitude}`)
+        } else {
+            logger.warn(`You not set the map center. Usign defaults | longitude: ${global.options.center.longitude}, latitude: ${global.options.center.latitude}`)
+        }
 
         options.basemap ||
             logger.warn(`You not set initial basemap. Usign default: ${global.options.basemap}`)
 
-        options.stars ||
+        options.stars === true ||
+        options.stars === false ||
             logger.warn(`You not set if map usign stars. Usign default: ${global.options.stars}`)
 
-        options.atmosphere.enable ||
-            logger.warn(`You not set if map usign atmosphere efect. Usign default: ${global.options.atmosphere.enable}`)
+        if (options.atmosphere) {
+            options.atmosphere.enable === true ||
+            options.atmosphere.enable === false ||
+                logger.warn(`You not set if map usign atmosphere efect. Usign default: ${global.options.atmosphere.enable}`)
 
-        options.atmosphere.quality ||
-            logger.warn(`You not set atmosphere quality. Usign default: ${global.options.atmosphere.quality}`)
+            options.atmosphere.quality ||
+                logger.warn(`You not set atmosphere quality. Usign default: ${global.options.atmosphere.quality}`)
+        } else {
+            logger.warn(`You not set the atmosphere options. Usign defaults | enable: ${global.options.atmosphere.enable}, quality: ${global.options.atmosphere.quality}`)
+        }
 
-        options.search.enable ||
-            logger.warn(`You not set Search. Usign default: ${global.options.search.enable}`)
+        if (options.search) {
+            options.search.enable === true ||
+            options.search.enable === false ||
+                logger.warn(`You not set Search. Usign default: ${global.options.search.enable}`)
 
-        options.search.position ||
-            logger.warn(`You not set Search position. Usign default: ${global.options.search.position}`)
+            options.search.position ||
+                logger.warn(`You not set Search position. Usign default: ${global.options.search.position}`)
 
-        options.search.index ||
-            logger.warn(`You not set Search index. Usign default: ${global.options.search.index}`)
+            options.search.index ||
+                logger.warn(`You not set Search index. Usign default: ${global.options.search.index}`)
+        } else {
+            logger.warn(`You not set the search options. Usign defaults | enable: ${global.options.search.enable}, position: ${global.options.search.position}, index: ${global.options.search.index}`)
+        }
 
-        options.cors ||
+        options.cors &&
+        options.cors.length > 0 ||
             logger.warn(`You not set any URL to enable CORS requests`)
 
         options.proxy ||
             logger.warn(`You not set any URL to proxy your requests`)
 
         global.options = {
+            cdn: options.cdn || global.options.cdn,
             element: options.element,
             scale: options.scale || global.options.scale,
             center: {
-                longitude: options.longitude || global.options.longitude,
-                latitude: options.latitude || global.options.latitude
+                longitude: options.center && options.center.longitude || global.options.center.longitude,
+                latitude: options.center && options.center.latitude || global.options.center.latitude
             },
             basemap: options.basemap || global.options.basemap,
             stars: options.stars || global.options.stars,
             atmosphere: {
-                enable: options.atmosphere.enable || global.options.atmosphere.enable,
-                quality: options.atmosphere.quality || global.options.atmosphere.quality
+                enable: options.atmosphere && options.atmosphere.enable || global.options.atmosphere.enable,
+                quality: options.atmosphere && options.atmosphere.quality || global.options.atmosphere.quality
             },
             search: {
-                enable: options.search.enable || global.options.search.enable,
-                position: options.search.position || global.options.search.position,
-                index: options.search.index || global.options.search.index
+                enable: options.search && options.search.enable || global.options.search.enable,
+                position: options.search && options.search.position || global.options.search.position,
+                index: options.search && options.search.index || global.options.search.index
             },
             cors: options.cors || '',
             proxy: options.proxy || ''
         }
 
         global.loaded = true
+        logger.log(`Ready to start!`)
     } else {
         logger.fatal(`You need pass some informations to describe your map`)
     }
@@ -94,9 +116,10 @@ export const options = options => {
 /**
  * The BigBang function
  * To create your map you need invocate this function
- * @param  {String} cdn - URL to official ESRI CDN or your own ESRI CDN provided by you
  */
-export const start = cdn => {
+export const start = () => {
+    const cdn = global.options.cdn
+
     if (cdn !== undefined && global.loaded) {
         // Has the ArcGIS API been added to the page?
         if (!esriLoader.isLoaded()) {
