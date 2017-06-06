@@ -5,18 +5,26 @@
             "title": "",
             "visible": false,
             "type": 0,
+            "progressive": false,
             "url": "",
             "definitionExpression": "",
-            "timeable": {
-				"enable": false,
-				"initialDate": "",
-				"initialTime": "",
-				"endDate": "",
-				"endTime": "",
-				"minDate": "",
-				"minTime": "",
-				"maxDate": "",
-				"maxTime": ""
+            "timeRange": {
+                "initial": {
+                    "date": "",
+    				"time": ""
+                },
+                "end": {
+                    "date": "",
+    				"time": ""
+                },
+                "min": {
+                    "date": "",
+    				"time": ""
+                },
+                "max": {
+                    "date": "",
+    				"time": ""
+                }
 			},
             "renderer": {},
             "popupTemplate": {}
