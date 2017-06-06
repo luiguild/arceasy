@@ -99,6 +99,7 @@ const create = (_layer) => {
 
     const layer = new LayerType({
         id: _layer.id,
+        title: _layer.title,
         url: _layer.url,
         definitionExpression: _layer.definitionExpression,
         raw: _layer,
@@ -161,7 +162,12 @@ const find = _layer => {
  */
 export const all = () => {
     const map = global.map
-    return map.allLayers._items
+
+    return map.allLayers._items.filter(layer => {
+        if (layer.raw !== undefined) {
+            return true
+        }
+    })
 }
 
 /**

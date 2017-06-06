@@ -118,31 +118,34 @@ export const options = options => {
  * To create your map you need invocate this function
  */
 export const start = () => {
-    const cdn = global.options.cdn
+    return new Promise((resolve, reject) => {
+        const cdn = global.options.cdn
 
-    if (cdn !== undefined && global.loaded) {
-        // Has the ArcGIS API been added to the page?
-        if (!esriLoader.isLoaded()) {
-            // No, lazy load it the ArcGIS API before using its classes
-            esriLoader.bootstrap(err => {
-                if (err) {
-                    logger.error(err)
-                }
-                // Once it's loaded, create the map
+        if (cdn !== undefined && global.loaded) {
+            // Has the ArcGIS API been added to the page?
+            if (!esriLoader.isLoaded()) {
+                // No, lazy load it the ArcGIS API before using its classes
+                esriLoader.bootstrap(err => {
+                    if (err) {
+                        logger.error(err)
+                    }
+                    // Once it's loaded, create the map
+                    logger.log(`Waiting ESRI server...`)
+                    dojoLoader(resolve, reject)
+                }, {
+                    // Use a specific version instead of latest 4.x
+                    url: cdn
+                })
+            } else {
+                // ArcGIS API is already loaded, just create the map
                 logger.log(`Waiting ESRI server...`)
-                dojoLoader()
-            }, {
-                // Use a specific version instead of latest 4.x
-                url: cdn
-            })
+                dojoLoader(resolve, reject)
+            }
         } else {
-            // ArcGIS API is already loaded, just create the map
-            logger.log(`Waiting ESRI server...`)
-            dojoLoader()
+            logger.fatal(`Fatal error! You must provider an CDN.`)
+            reject()
         }
-    } else {
-        logger.fatal(`Fatal error! You must provider an CDN.`)
-    }
+    })
 }
 
 /**
@@ -152,7 +155,7 @@ export const start = () => {
  * create view,
  * and put in page
  */
-const dojoLoader = () => {
+const dojoLoader = (resolve, reject) => {
     if (global.loaded) {
         esriLoader.dojoRequire([
             'esri/config',
@@ -266,12 +269,16 @@ const dojoLoader = () => {
                     constructors.SceneView,
                     global.options
                 )
+
+                resolve()
             } else {
                 logger.error(`Error during creating the necessary constructors... Try again.`)
+                reject()
             }
         })
     } else {
         logger.fatal(`Fatal error! You need set some map options.`)
+        reject()
     }
 }
 
