@@ -34,6 +34,7 @@ const config = {
         new UglifyJSPlugin({
             compress: false,
             comments: false,
+            mangle: false,
             sourceMap: true
         })
     ]

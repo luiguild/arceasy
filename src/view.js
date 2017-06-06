@@ -64,30 +64,39 @@ const watcherRunning = (map, view) => {
     const watchUtils = constructors.utils.watchUtils
 
     watchUtils.whenTrue(view, 'stationary', () => {
-        if (view.extent) {
-            const urlQuery = `!xmin=${view.extent.xmin}!xmax=${view.extent.xmax}!ymin=${view.extent.ymin}!ymax=${view.extent.ymax}`
+        logger.log(`View changed! Refreshing layers...`)
+        // console.log(view.extent.center.latitude, view.extent.center.longitude, view.scale)
 
-            logger.log(`View changed! Mapping all layers...`)
+        refreshExtent(map, view)
+    })
+}
+ /**
+  * [getExtent description]
+  * @return {[type]} [description]
+  */
+const refreshExtent = (map, view) => {
+    const urlQuery = `!xmin=${view.extent.xmin}!xmax=${view.extent.xmax}!ymin=${view.extent.ymin}!ymax=${view.extent.ymax}`
 
-            console.log(view.extent.center.latitude, view.extent.center.longitude, view.scale)
+    map.allLayers.map(layer => {
+        if (((view.scale < layer.minScale &&
+                view.scale > layer.maxScale) ||
+                (layer.minScale === 0 &&
+                layer.maxScale === 0)) &&
+                (layer.raw !== undefined &&
+                layer.visible)) {
+            if (layer.raw.type === 0) {
+                logger.log(`Getting extent to request ${layer.title}`)
+                logger.log(`Requesting to server: ${layer.raw.url}/where=${urlQuery}`)
 
-            map.allLayers.map(layer => {
-                if (((view.scale < layer.minScale &&
-                        view.scale > layer.maxScale) ||
-                        (layer.minScale === 0 &&
-                        layer.maxScale === 0)) &&
-                        (layer.raw !== undefined &&
-                        layer.visible)) {
-                    if (layer.raw.type === 0) {
-                        logger.log(`Getting extent to request ${layer.title}`)
-                        logger.log(`Requesting to server: ${layer.raw.url}/where=${urlQuery}`)
+                layer.outOfRange = false
+                layer.definitionExpression = urlQuery
+            }
 
-                        layer.definitionExpression = urlQuery
-                    }
+            logger.log(`Drawing layer: ${layer.title}`)
+        } else {
+            logger.log('View changed but ' + layer.title + ' is out of range')
 
-                    logger.log(`Drawing layer: ${layer.title}`)
-                }
-            })
+            layer.outOfRange = true
         }
     })
 }

@@ -16,6 +16,8 @@ export const add = layers => {
                 layer.id = indx
             }
 
+            layer.outOfRange = true
+
             global.map.add(create(layer))
         }
     })
@@ -28,6 +30,9 @@ export const add = layers => {
  */
 const validate = layer => {
     if (layer) {
+        !layer.title ||
+            logger.log(`Validating layer: ${layer.title}`)
+
         if (layer.title === undefined ||
             layer.title === '' ||
             !layer.title) {
@@ -50,7 +55,7 @@ const validate = layer => {
 
         if (layer.type === undefined ||
             layer.type === '' ||
-            !layer.type) {
+            layer.type === false) {
             logger.fatal(`You need provide a layer type (0 = FeatureLayer, 1 = TileLayer)`)
 
             return false
@@ -114,17 +119,18 @@ const create = (_layer) => {
 
     layer.then(() => {
         logger.log(`Layer ${layer.title} ready!`)
-        logger.log(`View waiting changes...`)
 
         if (layer.raw.type === 1) {
-            layer.minScale = layer.raw.minScale !== null
+            layer.minScale = layer.raw.minScale !== null &&
+                parseInt(layer.raw.minScale) !== 0
                 ? layer.raw.minScale
                 : 0
-            layer.maxScale = layer.raw.maxScale !== null
+            layer.maxScale = layer.raw.maxScale !== null &&
+                parseInt(layer.raw.maxScale)
                 ? layer.raw.maxScale
                 : 0
 
-            logger.log(`minScale: ${layer.minScale} and maxScale: ${layer.maxScale} defined manually`)
+            logger.log(`minScale: ${parseInt(layer.minScale)} and maxScale: ${parseInt(layer.maxScale)} defined manually`)
         }
     })
 
@@ -136,7 +142,7 @@ const create = (_layer) => {
  * @param  {String|Number} _layer - Layer title or ID
  * @return {Object} Layer that will be manipulated
  */
-const findLayer = _layer => {
+const find = _layer => {
     const map = global.map
 
     return map.allLayers.find(layer => {
@@ -150,12 +156,21 @@ const findLayer = _layer => {
 }
 
 /**
+ * [getLayers description]
+ * @return {[type]} [description]
+ */
+export const all = () => {
+    const map = global.map
+    return map.allLayers._items
+}
+
+/**
  * Change layer visibility
  * @param  {String|Number} _layer - Layer title or ID
  * @param  {Boolean} visibility - Set if layer is visible or not
  */
 export const setVisibility = (_layer, visibility) => {
-    const layer = findLayer(_layer)
+    const layer = find(_layer)
 
     if (layer) {
         layer.visible = visibility
@@ -171,7 +186,7 @@ export const setVisibility = (_layer, visibility) => {
  * @param  {Number} _opacity - new opacity
  */
 export const setOpacity = (_layer, _opacity) => {
-    const layer = findLayer(_layer)
+    const layer = find(_layer)
 
     if (layer) {
         layer.opacity = _opacity / 100
