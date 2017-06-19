@@ -44,7 +44,7 @@ export const createView = (map, View, options) => {
             logger.log('View ready!')
 
             controlUI(view)
-            watcherRunning(map, view)
+            watcherRunning(view)
         })
 
         return view
@@ -57,46 +57,51 @@ export const createView = (map, View, options) => {
  * Watcher that observe the globe moviment
  * and make requests with specific parameters
  * like extent on 'definitionExpression'
- * @param  {Object} map - Global map object descriptor
  * @param  {Object} view - Global view object descriptor
  */
-const watcherRunning = (map, view) => {
+const watcherRunning = view => {
     const watchUtils = constructors.utils.watchUtils
 
     watchUtils.whenTrue(view, 'stationary', () => {
         logger.log(`View changed! Refreshing layers...`)
         // console.log(view.extent.center.latitude, view.extent.center.longitude, view.scale)
 
-        refreshExtent(map, view)
+        refreshExtent(view)
     })
 }
  /**
-  * [getExtent description]
-  * @return {[type]} [description]
+  * Function to get the actual extent and set the definition expression
+  * on layer and make an request to refreh the layer info
+  * @param  {Object} view - Global view object descriptor
   */
-const refreshExtent = (map, view) => {
+const refreshExtent = view => {
+    const map = global.map
     const urlQuery = `!xmin=${view.extent.xmin}!xmax=${view.extent.xmax}!ymin=${view.extent.ymin}!ymax=${view.extent.ymax}`
 
     map.allLayers.map(layer => {
-        if (((view.scale < layer.minScale &&
-                view.scale > layer.maxScale) ||
-                (layer.minScale === 0 &&
-                layer.maxScale === 0)) &&
-                (layer.raw !== undefined &&
-                layer.visible)) {
-            if (layer.raw.type === 0) {
-                logger.log(`Getting extent to request ${layer.title}`)
-                logger.log(`Requesting to server: ${layer.raw.url}/where=${urlQuery}`)
+        if (layer.raw !== undefined) {
+            if ((view.scale < layer.minScale &&
+                    view.scale > layer.maxScale) ||
+                    (layer.minScale === 0 &&
+                    layer.maxScale === 0)) {
+                if (layer.raw.type === 0) {
+                    logger.log(`Getting extent to request ${layer.title}`)
+                    logger.log(`Requesting to server: ${layer.raw.url}/where=${urlQuery}`)
 
+                    layer.definitionExpression = urlQuery
+                }
                 layer.outOfRange = false
-                layer.definitionExpression = urlQuery
+
+                if (layer.visible) {
+                    logger.log(`Drawing layer: ${layer.title}`)
+                }
+            } else {
+                if (layer.visible) {
+                    logger.log('View changed but ' + layer.title + ' is out of range')
+                }
+
+                layer.outOfRange = true
             }
-
-            logger.log(`Drawing layer: ${layer.title}`)
-        } else {
-            logger.log('View changed but ' + layer.title + ' is out of range')
-
-            layer.outOfRange = true
         }
     })
 }
