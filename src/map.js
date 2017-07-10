@@ -17,6 +17,7 @@ import { global, constructors } from './config'
  * @param  {Boolean} options.stars - If stars is enabled
  * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
  * @param  {String} options.atmosphere.quality - Atmosphere quality
+ * @param  {Boolean} options.watcher - If watcherRunning() is enabled
  * @param  {Boolean} options.search.enable - If search is enabled
  * @param  {String} options.search.position - Search position
  * @param  {Number} options.search.index - Search index
@@ -62,6 +63,10 @@ export const options = options => {
             logger.warn(`You not set the atmosphere options. Usign defaults | enable: ${global.options.atmosphere.enable}, quality: ${global.options.atmosphere.quality}`)
         }
 
+        options.watcher === true ||
+        options.watcher === false ||
+            logger.warn(`You not set if map usign watcher to refresh the layers. Usign default: ${global.options.watcher}`)
+
         if (options.search) {
             options.search.enable === true ||
             options.search.enable === false ||
@@ -84,26 +89,76 @@ export const options = options => {
             logger.warn(`You not set any URL to proxy your requests`)
 
         global.options = {
-            cdn: options.cdn || global.options.cdn,
+            cdn: options.cdn !== '' &&
+                options.cdn !== undefined
+                ? options.cdn
+                : global.options.cdn,
             element: options.element,
-            scale: options.scale || global.options.scale,
+            scale: options.scale !== '' &&
+                options.scale !== undefined
+                ? options.scale
+                : global.options.scale,
             center: {
-                longitude: options.center && options.center.longitude || global.options.center.longitude,
-                latitude: options.center && options.center.latitude || global.options.center.latitude
+                longitude: options.center &&
+                    options.center.longitude !== '' &&
+                    options.center.longitude !== undefined
+                    ? options.center.longitude
+                    : global.options.center.longitude,
+                latitude: options.center &&
+                    options.center.latitude !== '' &&
+                    options.center.latitude !== undefined
+                    ? options.center.latitude
+                    : global.options.center.latitude
             },
-            basemap: options.basemap || global.options.basemap,
-            stars: options.stars || global.options.stars,
+            basemap: options.basemap !== '' &&
+                options.basemap !== undefined
+                ? options.basemap
+                : global.options.basemap,
+            stars: options.stars !== '' &&
+                options.stars !== undefined
+                ? options.stars
+                : global.options.stars,
             atmosphere: {
-                enable: options.atmosphere && options.atmosphere.enable || global.options.atmosphere.enable,
-                quality: options.atmosphere && options.atmosphere.quality || global.options.atmosphere.quality
+                enable: options.atmosphere &&
+                    options.atmosphere.enable !== '' &&
+                    options.atmosphere.enable !== undefined
+                    ? options.atmosphere.enable
+                    : global.options.atmosphere.enable,
+                quality: options.atmosphere &&
+                    options.atmosphere.quality !== '' &&
+                    options.atmosphere.quality !== undefined
+                    ? options.atmosphere.quality
+                    : global.options.atmosphere.quality
             },
+            watcher: options.watcher !== '' &&
+                options.watcher !== undefined
+                ? options.watcher
+                : global.options.watcher,
             search: {
-                enable: options.search && options.search.enable || global.options.search.enable,
-                position: options.search && options.search.position || global.options.search.position,
-                index: options.search && options.search.index || global.options.search.index
+                enable: options.search &&
+                    options.search.enable !== '' &&
+                    options.search.enable !== undefined
+                    ? options.search.enable
+                    : global.options.search.enable,
+                position: options.search &&
+                    options.search.position !== '' &&
+                    options.search.position !== undefined
+                    ? options.search.position
+                    : global.options.search.position,
+                index: options.search &&
+                    options.search.index !== '' &&
+                    options.search.index !== undefined
+                    ? options.search.index
+                    : global.options.search.index
             },
-            cors: options.cors || '',
-            proxy: options.proxy || ''
+            cors: options.cors !== '' &&
+                options.cors !== undefined
+                ? options.cors
+                : '',
+            proxy: options.proxy !== '' &&
+                options.proxy !== undefined
+                ? options.proxy
+                : ''
         }
 
         global.loaded = true
@@ -223,9 +278,11 @@ const dojoLoader = (resolve, reject) => {
             Search,
             on
         ) => {
-            global.options.cors.forEach(elm => {
-                esriConfig.request.corsEnabledServers.push(elm)
-            })
+            if (global.options.cors) {
+                global.options.cors.forEach(elm => {
+                    esriConfig.request.corsEnabledServers.push(elm)
+                })
+            }
 
             esriConfig.request.proxyUrl = global.options.proxy || ''
 
@@ -293,8 +350,7 @@ const createMap = (Map, basemap) => {
 
     const map = new Map({
         basemap: basemap,
-        ground: 'world-elevation',
-        layers: []
+        ground: 'world-elevation'
     })
 
     return map

@@ -16,6 +16,7 @@ import { global, constructors } from './config'
  * @param  {Boolean} options.stars - If stars is enabled
  * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
  * @param  {String} options.atmosphere.quality - Atmosphere quality
+ * @param  {Boolean} options.watcher - If watcherRunning() is enabled
  * @param  {Boolean} options.search.enable - If search is enabled
  * @param  {String} options.search.position - Search position
  * @param  {Number} options.search.index - Search index
@@ -44,7 +45,10 @@ export const createView = (map, View, options) => {
             logger.log('View ready!')
 
             controlUI(view)
-            watcherRunning(view)
+
+            if (options.watcher) {
+                watcherRunning(view)
+            }
         })
 
         return view
@@ -69,6 +73,7 @@ const watcherRunning = view => {
         refreshExtent(view)
     })
 }
+
  /**
   * Function to get the actual extent and set the definition expression
   * on layer and make an request to refreh the layer info

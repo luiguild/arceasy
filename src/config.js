@@ -17,6 +17,7 @@ export const global = {
             enable: true,
             quality: 'low'
         },
+        watcher: true,
         search: {
             enable: false,
             position: 'top-left',

@@ -95,8 +95,6 @@ const create = (_layer) => {
         LayerType = layerConstructors.TileLayer
     }
 
-    logger.log(`Adding layer on map: ${_layer.title} | Initial visibility: ${_layer.visible}`)
-
     const layer = new LayerType({
         id: _layer.id,
         title: _layer.title,
@@ -106,7 +104,8 @@ const create = (_layer) => {
         visible: _layer.visible
     })
 
-    logger.log(`Loading layer from: ${_layer.url}`)
+    logger.log(`Adding layer on map: ${layer.raw.title} | Initial visibility: ${layer.raw.visible}`)
+    logger.log(`Loading layer from: ${layer.raw.url}`)
 
     if (layer.raw.renderer) {
         logger.log(`Applying renderer...`)
