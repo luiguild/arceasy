@@ -86,12 +86,13 @@ const create = (_layer) => {
     const utilsConstructors = constructors.utils
     const jsonUtils = utilsConstructors.jsonUtils
     let LayerType
+    let layerLabel
 
     if (_layer.type === 0) {
-        logger.log(`Creating new Feature Layer...`)
+        layerLabel = 'Feature Layer'
         LayerType = layerConstructors.FeatureLayer
     } else if (_layer.type === 1) {
-        logger.log(`Creating new Tile Layer...`)
+        layerLabel = 'Tile Layer'
         LayerType = layerConstructors.TileLayer
     }
 
@@ -104,8 +105,7 @@ const create = (_layer) => {
         visible: _layer.visible
     })
 
-    logger.log(`Adding layer on map: ${layer.raw.title} | Initial visibility: ${layer.raw.visible}`)
-    logger.log(`Loading layer from: ${layer.raw.url}`)
+    logger.log(`Adding a ${layerLabel} on map: ${layer.raw.title} | Visibility: ${layer.raw.visible} | URL: ${layer.raw.url}`)
 
     if (layer.raw.renderer) {
         logger.log(`Applying renderer...`)
@@ -130,7 +130,7 @@ const create = (_layer) => {
                 ? layer.raw.maxScale
                 : 0
 
-            logger.log(`minScale: ${parseInt(layer.minScale)} and maxScale: ${parseInt(layer.maxScale)} defined manually`)
+            // logger.log(`minScale: ${parseInt(layer.minScale)} and maxScale: ${parseInt(layer.maxScale)} defined manually`)
         }
     })
 

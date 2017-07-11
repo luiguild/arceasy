@@ -67,7 +67,7 @@ const watcherRunning = view => {
     const watchUtils = constructors.utils.watchUtils
 
     watchUtils.whenTrue(view, 'stationary', () => {
-        logger.log(`View changed! Refreshing layers...`)
+        logger.log(`View changed! Getting extent to refreshing layers...`)
         // console.log(view.extent.center.latitude, view.extent.center.longitude, view.scale)
 
         refreshExtent(view)
@@ -90,19 +90,16 @@ const refreshExtent = view => {
                     (layer.minScale === 0 &&
                     layer.maxScale === 0)) {
                 if (layer.raw.type === 0) {
-                    logger.log(`Getting extent to request ${layer.title}`)
-                    logger.log(`Requesting to server: ${layer.raw.url}/where=${urlQuery}`)
-
                     layer.definitionExpression = urlQuery
                 }
                 layer.outOfRange = false
 
                 if (layer.visible) {
-                    logger.log(`Drawing layer: ${layer.title}`)
+                    logger.log(`Drawing layer: ${layer.title} | URL request: ${layer.raw.url}/where=${urlQuery}`)
                 }
             } else {
                 if (layer.visible) {
-                    logger.log('View changed but ' + layer.title + ' is out of range')
+                    logger.log(`${layer.title} it's visible, but is out of range`)
                 }
 
                 layer.outOfRange = true
