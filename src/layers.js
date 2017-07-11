@@ -7,6 +7,8 @@ import { global, constructors } from './config'
  * @param  {Array} layers - List of layers
  */
 export const add = layers => {
+    const map = global.map
+
     layers.map((layer, indx) => {
         if (validate(layer)) {
             if (layer.id === undefined ||
@@ -18,7 +20,7 @@ export const add = layers => {
 
             layer.outOfRange = true
 
-            global.map.add(create(layer))
+            return map.add(create(layer))
         }
     })
 }
@@ -81,7 +83,7 @@ const validate = layer => {
  * @param {Object} _layer - Valid Layer object previously worked
  * @return {Object} Layer ready to add on map
  */
-const create = (_layer) => {
+const create = _layer => {
     const layerConstructors = constructors.layer
     const utilsConstructors = constructors.utils
     const jsonUtils = utilsConstructors.jsonUtils
@@ -156,8 +158,8 @@ const find = _layer => {
 }
 
 /**
- * [getLayers description]
- * @return {[type]} [description]
+ * get all layers included on map
+ * @return {Array} list of all layers included by user
  */
 export const all = () => {
     const map = global.map

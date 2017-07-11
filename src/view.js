@@ -95,7 +95,7 @@ const refreshExtent = view => {
                 layer.outOfRange = false
 
                 if (layer.visible) {
-                    logger.log(`Drawing layer: ${layer.title} | URL request: ${layer.raw.url}/where=${urlQuery}`)
+                    logger.log(`Drawing layer: ${layer.title} | URL requested: ${layer.raw.url}/where=${urlQuery}`)
                 }
             } else {
                 if (layer.visible) {
