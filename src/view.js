@@ -17,6 +17,9 @@ import { global, constructors } from './config'
  * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
  * @param  {String} options.atmosphere.quality - Atmosphere quality
  * @param  {Boolean} options.watcher - If watcherRunning() is enabled
+ * @param  {Boolean} options.light.cameraTracking - If you to display the
+ *                                                lighting according to the
+ *                                                current time of day
  * @param  {Boolean} options.search.enable - If search is enabled
  * @param  {String} options.search.position - Search position
  * @param  {Number} options.search.index - Search index
@@ -40,6 +43,8 @@ export const createView = (map, View, options) => {
             starsEnabled: options.stars,
             atmosphereEnabled: options.atmosphere.enable
         })
+
+        view.environment.lighting.cameraTrackingEnabled = options.light.cameraTracking
 
         view.then(() => {
             logger.log('View ready!')

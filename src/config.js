@@ -18,6 +18,9 @@ export const global = {
             quality: 'low'
         },
         watcher: true,
+        light: {
+            cameraTracking: true
+        },
         search: {
             enable: false,
             position: 'top-left',

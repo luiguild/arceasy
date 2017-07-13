@@ -18,6 +18,9 @@ import { global, constructors } from './config'
  * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
  * @param  {String} options.atmosphere.quality - Atmosphere quality
  * @param  {Boolean} options.watcher - If watcherRunning() is enabled
+ * @param  {Boolean} options.light.cameraTracking - If you to display the
+ *                                                lighting according to the
+ *                                                current time of day
  * @param  {Boolean} options.search.enable - If search is enabled
  * @param  {String} options.search.position - Search position
  * @param  {Number} options.search.index - Search index
@@ -66,6 +69,14 @@ export const options = options => {
         options.watcher === true ||
         options.watcher === false ||
             logger.warn(`You not set if map usign watcher to refresh the layers. Usign default: ${global.options.watcher}`)
+
+        if (options.light) {
+            options.light.cameraTracking === true ||
+            options.light.cameraTracking === false ||
+                logger.warn(`You not set the camera tracking options. Usign default: ${global.options.light.cameraTracking}`)
+        } else {
+            logger.warn(`You not set the light options. Usign default for camera tracking: ${global.options.light.cameraTracking}`)
+        }
 
         if (options.search) {
             options.search.enable === true ||
@@ -134,6 +145,13 @@ export const options = options => {
                 options.watcher !== undefined
                 ? options.watcher
                 : global.options.watcher,
+            light: {
+                cameraTracking: options.light &&
+                options.light.cameraTracking !== '' &&
+                options.light.cameraTracking !== undefined
+                ? options.light.cameraTracking
+                : global.options.light.cameraTracking
+            },
             search: {
                 enable: options.search &&
                     options.search.enable !== '' &&
