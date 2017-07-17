@@ -24,6 +24,7 @@ const config = {
                         [
                             'es2015',
                             'stage-2'
+                            // 'stage-3'
                         ]
                     ]
                 }

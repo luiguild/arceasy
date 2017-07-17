@@ -1,8 +1,8 @@
 export const prefix = 'ArcEasy'
 
 export const global = {
-    map: '',
-    view: '',
+    map: {},
+    view: {},
     options: {
         cdn: 'https://js.arcgis.com/4.3/',
         element: '',
@@ -26,37 +26,20 @@ export const global = {
             position: 'top-left',
             index: 1
         },
-        cors: '',
+        cors: [],
         proxy: ''
     },
     loaded: false
 }
 
 export const constructors = {
-    layer: {
-        FeatureLayer: '',
-        TileLayer: ''
-    },
-    map: '',
-    container: '',
-    view: '',
-    utils: {
-        watchUtils: '',
-        Search: '',
-        jsonUtils: '',
-        Extent: ''
-    },
-    renderer: {
-        UniqueValueRenderer: '',
-        ClassBreaksRenderer: '',
-        ExtrudeSymbol3DLayer: '',
-        PolygonSymbol3D: '',
-        SimpleRenderer: '',
-        SimpleMarkerSymbol: '',
-        PictureMarkerSymbol: '',
-        SimpleLineSymbol: '',
-        SimpleFillSymbol: ''
-    }
+    layer: {},
+    map: {},
+    container: {},
+    view: {},
+    utils: {},
+    renderer: {},
+    dojo: {}
 }
 
 export const templates = {

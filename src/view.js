@@ -44,12 +44,14 @@ export const createView = (map, View, options) => {
             atmosphereEnabled: options.atmosphere.enable
         })
 
-        view.environment.lighting.cameraTrackingEnabled = options.light.cameraTracking
-
         view.then(() => {
             logger.log('View ready!')
 
             controlUI(view)
+            light({
+                cameraTracking: options.light.cameraTracking,
+                date: options.light.date
+            })
 
             if (options.watcher) {
                 watcherRunning(view)
@@ -120,6 +122,7 @@ const refreshExtent = view => {
 const controlUI = view => {
     logger.log('Changing UI elements...')
 
+    view.environment.atmosphereEnabled = global.options.atmosphere.enable
     view.environment.atmosphere.quality = global.options.atmosphere.quality
 
     if (global.options.search.enable) {
@@ -142,23 +145,53 @@ const controlUI = view => {
 }
 
 /**
+ * Change camera tracking
+ * @param  {Object} cameraTracking - Set the light on the world based on camera or not
+ */
+export const light = ({cameraTracking, date}) => {
+    const view = global.view
+
+    if (cameraTracking !== '' &&
+        cameraTracking !== undefined) {
+        logger.log(`Changing light camera tracking to: ${cameraTracking}`)
+        view.environment.lighting.cameraTrackingEnabled = cameraTracking
+    }
+
+    if (date === 'now') {
+        logger.log(`Changing light date to: ${date}`)
+        view.environment.lighting.date = Date.now()
+    }
+
+    if (date === '' ||
+        date === undefined) {
+        view.environment.lighting.date = new Date('Jul 15 2017 12:00:00')
+        logger.log(`Changing light date to: default - Jul 15 2017 12:00:00`)
+    }
+}
+
+/**
  * Navigate on map using long/lat and camera position
  * @param  {Object} coordinates - Object that contain destiny longitude and latitude
  * @param  {Number} scale - Scale on earth
  * @param  {Object} camera - Object that contain new angles to position camera
  */
-export const newPosition = ({coordinates, scale, camera}) => {
-    if (coordinates && scale && camera) {
+export const newPosition = ({extent, coordinates, scale, camera}) => {
+    if (extent || coordinates || scale || camera) {
         const view = global.view
 
         view.goTo({
-            center: [
-                coordinates.longitude,
+            target: extent || '',
+            center:
+                coordinates.longitude &&
                 coordinates.latitude
-            ],
-            scale: scale,
-            tilt: camera.tilt,
-            heading: camera.heading
+                ? [
+                    coordinates.longitude,
+                    coordinates.latitude
+                ]
+                : '',
+            scale: scale || '',
+            tilt: camera.tilt || '',
+            heading: camera.heading || ''
         })
 
         logger.log(`Changing map position...`)

@@ -74,6 +74,10 @@ export const options = options => {
             options.light.cameraTracking === true ||
             options.light.cameraTracking === false ||
                 logger.warn(`You not set the camera tracking options. Usign default: ${global.options.light.cameraTracking}`)
+
+            options.light.date === '' ||
+            options.light.date === undefined ||
+                logger.warn(`You not set a date to view light position.`)
         } else {
             logger.warn(`You not set the light options. Usign default for camera tracking: ${global.options.light.cameraTracking}`)
         }
@@ -150,7 +154,12 @@ export const options = options => {
                 options.light.cameraTracking !== '' &&
                 options.light.cameraTracking !== undefined
                 ? options.light.cameraTracking
-                : global.options.light.cameraTracking
+                : global.options.light.cameraTracking,
+                date: options.light &&
+                options.light.date !== '' &&
+                options.light.date !== undefined
+                ? options.light.date
+                : global.options.light.date
             },
             search: {
                 enable: options.search &&
@@ -237,6 +246,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/Camera',
 
             'esri/views/SceneView',
+            'esri/views/3d/externalRenderers',
 
             'esri/layers/FeatureLayer',
             'esri/layers/TileLayer',
@@ -244,6 +254,7 @@ const dojoLoader = (resolve, reject) => {
 
             'esri/core/watchUtils',
             'esri/core/Collection',
+            'esri/core/declare',
 
             'esri/renderers/UniqueValueRenderer',
             'esri/renderers/ClassBreaksRenderer',
@@ -262,9 +273,16 @@ const dojoLoader = (resolve, reject) => {
             'esri/geometry/Geometry',
             'esri/geometry/Point',
             'esri/geometry/Extent',
+            'esri/geometry/SpatialReference',
+
+            'esri/tasks/QueryTask',
+            'esri/tasks/support/Query',
 
             'esri/widgets/Search',
 
+            'esri/request',
+
+            'dojo/promise/all',
             'dojo/on',
             'dojo/domReady!'
         ], (
@@ -273,11 +291,13 @@ const dojoLoader = (resolve, reject) => {
             Graphic,
             Camera,
             SceneView,
+            externalRenderers,
             FeatureLayer,
             TileLayer,
             GraphicsLayer,
             watchUtils,
             Collection,
+            declare,
             UniqueValueRenderer,
             ClassBreaksRenderer,
             SimpleRenderer,
@@ -293,7 +313,12 @@ const dojoLoader = (resolve, reject) => {
             Geometry,
             Point,
             Extent,
+            SpatialReference,
+            QueryTask,
+            Query,
             Search,
+            esriRequest,
+            all,
             on
         ) => {
             if (global.options.cors) {
@@ -306,6 +331,7 @@ const dojoLoader = (resolve, reject) => {
 
             constructors.Map = Map
             constructors.SceneView = SceneView
+            constructors.externalRenderers = externalRenderers
 
             constructors.layer.FeatureLayer = FeatureLayer
             constructors.layer.TileLayer = TileLayer
@@ -315,7 +341,12 @@ const dojoLoader = (resolve, reject) => {
             constructors.utils.Search = Search
             constructors.utils.jsonUtils = jsonUtils
             constructors.utils.Extent = Extent
+            constructors.utils.SpatialReference = SpatialReference
             constructors.utils.Camera = Camera
+            constructors.utils.esriRequest = esriRequest
+            constructors.utils.declare = declare
+            constructors.utils.QueryTask = QueryTask
+            constructors.utils.Query = Query
 
             constructors.renderer.UniqueValueRenderer = UniqueValueRenderer
             constructors.renderer.ClassBreaksRenderer = ClassBreaksRenderer
@@ -331,21 +362,40 @@ const dojoLoader = (resolve, reject) => {
             constructors.renderer.PointSymbol3D = PointSymbol3D
             constructors.renderer.ObjectSymbol3DLayer = ObjectSymbol3DLayer
 
+            constructors.dojo.on = on
+            constructors.dojo.all = all
+
             if (constructors.Map && constructors.SceneView) {
                 logger.log(`All constructorss created!`)
 
-                global.map = createMap(
+                // global.map = createMap(
+                //     constructors.Map,
+                //     global.options.basemap
+                // )
+                createMap(
                     constructors.Map,
                     global.options.basemap
                 )
+                .then(map => {
+                    global.map = map
+                    return global.map
+                })
+                .then(map => {
+                    createView(
+                        map,
+                        constructors.SceneView,
+                        global.options
+                    ).then(view => {
+                        global.view = view
+                        resolve()
+                    })
+                })
 
-                global.view = createView(
-                    global.map,
-                    constructors.SceneView,
-                    global.options
-                )
-
-                resolve()
+                // global.view = createView(
+                //     global.map,
+                //     constructors.SceneView,
+                //     global.options
+                // )
             } else {
                 logger.error(`Error during creating the necessary constructors... Try again.`)
                 reject()
@@ -371,5 +421,5 @@ const createMap = (Map, basemap) => {
         ground: 'world-elevation'
     })
 
-    return map
+    return Promise.resolve(map)
 }
