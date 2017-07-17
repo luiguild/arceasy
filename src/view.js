@@ -176,12 +176,35 @@ export const light = ({cameraTracking, date}) => {
  * @param  {Object} camera - Object that contain new angles to position camera
  */
 export const newPosition = ({extent, coordinates, scale, camera}) => {
-    if (extent || coordinates || scale || camera) {
+    if (extent !== undefined ||
+        coordinates !== undefined ||
+        scale !== undefined ||
+        camera !== undefined) {
         const view = global.view
+        const Extent = constructors.utils.Extent
+        let newExtent
+
+        if (extent) {
+            newExtent = new Extent({
+                xmax: extent.xmax || '',
+                xmin: extent.xmin || '',
+                ymax: extent.ymax || '',
+                ymin: extent.ymin || '',
+                spatialReference: {
+                    wkid: extent.spatialReference
+                        ? extent.spatialReference.wkid
+                        : ''
+                }
+            })
+        }
 
         view.goTo({
-            target: extent || '',
+            target: extent &&
+                newExtent
+                ? newExtent
+                : '',
             center:
+                coordinates &&
                 coordinates.longitude &&
                 coordinates.latitude
                 ? [
@@ -190,8 +213,18 @@ export const newPosition = ({extent, coordinates, scale, camera}) => {
                 ]
                 : '',
             scale: scale || '',
-            tilt: camera.tilt || '',
-            heading: camera.heading || ''
+            tilt: camera &&
+                camera.tilt
+                ? camera.tilt
+                : '',
+            heading: camera &&
+                camera.heading
+                ? camera.heading
+                : '',
+            position: camera &&
+                camera.position
+                ? camera.position
+                : ''
         })
 
         logger.log(`Changing map position...`)
