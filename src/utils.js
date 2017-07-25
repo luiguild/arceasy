@@ -23,7 +23,7 @@ export const addGraphicLayer = (_symbol, _point) => {
     const Graphic = constructors.renderer.Graphic
 
     const graphicsLayer = new GraphicsLayer({
-        id: _symbol.id !== '' ||
+        id: _symbol.id !== '' &&
             _symbol.id !== undefined
             ? _symbol.id
             : '[ArcE]Graph'

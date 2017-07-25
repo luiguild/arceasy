@@ -251,6 +251,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/layers/FeatureLayer',
             'esri/layers/TileLayer',
             'esri/layers/GraphicsLayer',
+            'esri/layers/PointCloudLayer',
 
             'esri/core/watchUtils',
             'esri/core/Collection',
@@ -260,6 +261,10 @@ const dojoLoader = (resolve, reject) => {
             'esri/renderers/ClassBreaksRenderer',
             'esri/renderers/SimpleRenderer',
             'esri/renderers/support/jsonUtils',
+            'esri/renderers/PointCloudUniqueValueRenderer',
+            'esri/renderers/PointCloudRGBRenderer',
+            'esri/renderers/PointCloudStretchRenderer',
+            'esri/renderers/PointCloudClassBreaksRenderer',
 
             'esri/symbols/ExtrudeSymbol3DLayer',
             'esri/symbols/PolygonSymbol3D',
@@ -284,6 +289,7 @@ const dojoLoader = (resolve, reject) => {
 
             'dojo/promise/all',
             'dojo/on',
+            'dojo/query',
             'dojo/domReady!'
         ], (
             esriConfig,
@@ -295,6 +301,7 @@ const dojoLoader = (resolve, reject) => {
             FeatureLayer,
             TileLayer,
             GraphicsLayer,
+            PointCloudLayer,
             watchUtils,
             Collection,
             declare,
@@ -302,6 +309,10 @@ const dojoLoader = (resolve, reject) => {
             ClassBreaksRenderer,
             SimpleRenderer,
             jsonUtils,
+            PointCloudUniqueValueRenderer,
+            PointCloudRGBRenderer,
+            PointCloudStretchRenderer,
+            PointCloudClassBreaksRenderer,
             ExtrudeSymbol3DLayer,
             PolygonSymbol3D,
             SimpleMarkerSymbol,
@@ -319,7 +330,8 @@ const dojoLoader = (resolve, reject) => {
             Search,
             esriRequest,
             all,
-            on
+            on,
+            query
         ) => {
             if (global.options.cors) {
                 global.options.cors.forEach(elm => {
@@ -336,6 +348,7 @@ const dojoLoader = (resolve, reject) => {
             constructors.layer.FeatureLayer = FeatureLayer
             constructors.layer.TileLayer = TileLayer
             constructors.layer.GraphicsLayer = GraphicsLayer
+            constructors.layer.PointCloudLayer = PointCloudLayer
 
             constructors.utils.watchUtils = watchUtils
             constructors.utils.Search = Search
@@ -361,17 +374,18 @@ const dojoLoader = (resolve, reject) => {
             constructors.renderer.Point = Point
             constructors.renderer.PointSymbol3D = PointSymbol3D
             constructors.renderer.ObjectSymbol3DLayer = ObjectSymbol3DLayer
+            constructors.renderer.PointCloudUniqueValueRenderer = PointCloudUniqueValueRenderer
+            constructors.renderer.PointCloudRGBRenderer = PointCloudRGBRenderer
+            constructors.renderer.PointCloudStretchRenderer = PointCloudStretchRenderer
+            constructors.renderer.PointCloudClassBreaksRenderer = PointCloudClassBreaksRenderer
 
             constructors.dojo.on = on
             constructors.dojo.all = all
+            constructors.dojo.query = query
 
             if (constructors.Map && constructors.SceneView) {
                 logger.log(`All constructorss created!`)
 
-                // global.map = createMap(
-                //     constructors.Map,
-                //     global.options.basemap
-                // )
                 createMap(
                     constructors.Map,
                     global.options.basemap
@@ -390,12 +404,6 @@ const dojoLoader = (resolve, reject) => {
                         resolve()
                     })
                 })
-
-                // global.view = createView(
-                //     global.map,
-                //     constructors.SceneView,
-                //     global.options
-                // )
             } else {
                 logger.error(`Error during creating the necessary constructors... Try again.`)
                 reject()
