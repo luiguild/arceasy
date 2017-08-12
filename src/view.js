@@ -41,17 +41,18 @@ export const createView = (map, View, options) => {
             ],
             viewingMode: 'global',
             starsEnabled: options.stars,
-            atmosphereEnabled: options.atmosphere.enable
+            atmosphereEnabled: options.atmosphere.enable,
+            loaded: true
         })
 
         view.then(() => {
             logger.log('View ready!')
 
             controlUI(view)
-            light({
-                cameraTracking: options.light.cameraTracking,
-                date: options.light.date
-            })
+            // light({
+            //     cameraTracking: options.light.cameraTracking,
+            //     date: options.light.date
+            // })
 
             if (options.watcher) {
                 watcherRunning(view)
@@ -73,9 +74,11 @@ export const createView = (map, View, options) => {
 const watcherRunning = view => {
     const watchUtils = constructors.utils.watchUtils
 
+    logger.log(`Watcher running! Waiting changes on view.`)
+
     watchUtils.whenTrue(view, 'stationary', () => {
         logger.log(`View changed! Getting extent to refreshing layers...`)
-        // console.log(view.extent.center.latitude, view.extent.center.longitude, view.scale)
+        console.log(view.extent.center.latitude, view.extent.center.longitude, view.scale)
 
         refreshExtent(view)
     })
