@@ -95,24 +95,26 @@ const refreshExtent = view => {
 
     map.allLayers.map(layer => {
         if (layer.raw !== undefined) {
-            if ((view.scale < layer.minScale &&
-                    view.scale > layer.maxScale) ||
-                    (layer.minScale === 0 &&
-                    layer.maxScale === 0)) {
-                if (layer.raw.type === 0) {
-                    layer.definitionExpression = urlQuery
-                }
-                layer.outOfRange = false
+            if (layer.raw.progressive) {
+                if ((view.scale < layer.minScale &&
+                        view.scale > layer.maxScale) ||
+                        (layer.minScale === 0 &&
+                        layer.maxScale === 0)) {
+                    if (layer.raw.type === 0) {
+                        layer.definitionExpression = urlQuery
+                    }
+                    layer.outOfRange = false
 
-                if (layer.visible) {
-                    logger.log(`Drawing layer: ${layer.title} | URL requested: ${layer.raw.url}/where=${urlQuery}`)
-                }
-            } else {
-                if (layer.visible) {
-                    logger.log(`${layer.title} it's visible, but is out of range`)
-                }
+                    if (layer.visible) {
+                        logger.log(`Drawing progressive layer: ${layer.title} | URL requested: ${layer.raw.url}/where=${urlQuery}`)
+                    }
+                } else {
+                    if (layer.visible) {
+                        logger.log(`${layer.title} it's visible, but is out of range`)
+                    }
 
-                layer.outOfRange = true
+                    layer.outOfRange = true
+                }
             }
         }
     })

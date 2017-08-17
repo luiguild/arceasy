@@ -245,6 +245,8 @@ const dojoLoader = (resolve, reject) => {
             'esri/Graphic',
             'esri/Camera',
             'esri/WebScene',
+            'esri/request',
+            'esri/Color',
 
             'esri/views/SceneView',
             'esri/views/3d/externalRenderers',
@@ -280,11 +282,15 @@ const dojoLoader = (resolve, reject) => {
             'esri/symbols/ObjectSymbol3DLayer',
             'esri/symbols/MeshSymbol3D',
             'esri/symbols/FillSymbol3DLayer',
+            'esri/symbols/LineSymbol3D',
+            'esri/symbols/PathSymbol3DLayer',
 
             'esri/geometry/Geometry',
             'esri/geometry/Point',
             'esri/geometry/Extent',
             'esri/geometry/SpatialReference',
+            'esri/geometry/geometryEngine',
+            'esri/geometry/support/webMercatorUtils',
 
             'esri/tasks/QueryTask',
             'esri/tasks/support/Query',
@@ -292,8 +298,6 @@ const dojoLoader = (resolve, reject) => {
             'esri/widgets/Search',
             'esri/widgets/ColorSlider',
             'esri/widgets/Legend',
-
-            'esri/request',
 
             'dojo/promise/all',
             'dojo/on',
@@ -305,6 +309,8 @@ const dojoLoader = (resolve, reject) => {
             Graphic,
             Camera,
             WebScene,
+            esriRequest,
+            Color,
             SceneView,
             externalRenderers,
             FeatureLayer,
@@ -335,16 +341,19 @@ const dojoLoader = (resolve, reject) => {
             ObjectSymbol3DLayer,
             MeshSymbol3D,
             FillSymbol3DLayer,
+            LineSymbol3D,
+            PathSymbol3DLayer,
             Geometry,
             Point,
             Extent,
             SpatialReference,
+            geometryEngine,
+            webMercatorUtils,
             QueryTask,
             Query,
             Search,
             ColorSlider,
             Legend,
-            esriRequest,
             all,
             on,
             query
@@ -375,8 +384,12 @@ const dojoLoader = (resolve, reject) => {
             constructors.utils.jsonUtils = jsonUtils
             constructors.utils.Extent = Extent
             constructors.utils.SpatialReference = SpatialReference
+            constructors.utils.geometryEngine = geometryEngine
+            constructors.utils.webMercatorUtils = webMercatorUtils
             constructors.utils.Camera = Camera
+            constructors.utils.Graphic = Graphic
             constructors.utils.esriRequest = esriRequest
+            constructors.utils.Color = Color
             constructors.utils.declare = declare
             constructors.utils.lang = lang
             constructors.utils.QueryTask = QueryTask
@@ -391,12 +404,13 @@ const dojoLoader = (resolve, reject) => {
             constructors.renderer.PictureMarkerSymbol = PictureMarkerSymbol
             constructors.renderer.SimpleLineSymbol = SimpleLineSymbol
             constructors.renderer.SimpleFillSymbol = SimpleFillSymbol
-            constructors.renderer.Graphic = Graphic
             constructors.renderer.Point = Point
             constructors.renderer.PointSymbol3D = PointSymbol3D
             constructors.renderer.ObjectSymbol3DLayer = ObjectSymbol3DLayer
             constructors.renderer.MeshSymbol3D = MeshSymbol3D
             constructors.renderer.FillSymbol3DLayer = FillSymbol3DLayer
+            constructors.renderer.LineSymbol3D = LineSymbol3D
+            constructors.renderer.PathSymbol3DLayer = PathSymbol3DLayer
             constructors.renderer.PointCloudUniqueValueRenderer = PointCloudUniqueValueRenderer
             constructors.renderer.PointCloudRGBRenderer = PointCloudRGBRenderer
             constructors.renderer.PointCloudStretchRenderer = PointCloudStretchRenderer
