@@ -256,6 +256,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/core/watchUtils',
             'esri/core/Collection',
             'esri/core/declare',
+            'esri/core/lang',
 
             'esri/renderers/UniqueValueRenderer',
             'esri/renderers/ClassBreaksRenderer',
@@ -265,6 +266,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/renderers/PointCloudRGBRenderer',
             'esri/renderers/PointCloudStretchRenderer',
             'esri/renderers/PointCloudClassBreaksRenderer',
+            'esri/renderers/smartMapping/creators/color',
 
             'esri/symbols/ExtrudeSymbol3DLayer',
             'esri/symbols/PolygonSymbol3D',
@@ -284,6 +286,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/tasks/support/Query',
 
             'esri/widgets/Search',
+            'esri/widgets/ColorSlider',
 
             'esri/request',
 
@@ -305,6 +308,7 @@ const dojoLoader = (resolve, reject) => {
             watchUtils,
             Collection,
             declare,
+            lang,
             UniqueValueRenderer,
             ClassBreaksRenderer,
             SimpleRenderer,
@@ -313,6 +317,7 @@ const dojoLoader = (resolve, reject) => {
             PointCloudRGBRenderer,
             PointCloudStretchRenderer,
             PointCloudClassBreaksRenderer,
+            colorRendererCreator,
             ExtrudeSymbol3DLayer,
             PolygonSymbol3D,
             SimpleMarkerSymbol,
@@ -328,6 +333,7 @@ const dojoLoader = (resolve, reject) => {
             QueryTask,
             Query,
             Search,
+            ColorSlider,
             esriRequest,
             all,
             on,
@@ -352,12 +358,14 @@ const dojoLoader = (resolve, reject) => {
 
             constructors.utils.watchUtils = watchUtils
             constructors.utils.Search = Search
+            constructors.utils.ColorSlider = ColorSlider
             constructors.utils.jsonUtils = jsonUtils
             constructors.utils.Extent = Extent
             constructors.utils.SpatialReference = SpatialReference
             constructors.utils.Camera = Camera
             constructors.utils.esriRequest = esriRequest
             constructors.utils.declare = declare
+            constructors.utils.lang = lang
             constructors.utils.QueryTask = QueryTask
             constructors.utils.Query = Query
 
@@ -378,6 +386,7 @@ const dojoLoader = (resolve, reject) => {
             constructors.renderer.PointCloudRGBRenderer = PointCloudRGBRenderer
             constructors.renderer.PointCloudStretchRenderer = PointCloudStretchRenderer
             constructors.renderer.PointCloudClassBreaksRenderer = PointCloudClassBreaksRenderer
+            constructors.renderer.colorRendererCreator = colorRendererCreator
 
             constructors.dojo.on = on
             constructors.dojo.all = all
