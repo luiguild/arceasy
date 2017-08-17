@@ -244,6 +244,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/Map',
             'esri/Graphic',
             'esri/Camera',
+            'esri/WebScene',
 
             'esri/views/SceneView',
             'esri/views/3d/externalRenderers',
@@ -277,6 +278,8 @@ const dojoLoader = (resolve, reject) => {
             'esri/symbols/SimpleFillSymbol',
             'esri/symbols/PointSymbol3D',
             'esri/symbols/ObjectSymbol3DLayer',
+            'esri/symbols/MeshSymbol3D',
+            'esri/symbols/FillSymbol3DLayer',
 
             'esri/geometry/Geometry',
             'esri/geometry/Point',
@@ -288,6 +291,7 @@ const dojoLoader = (resolve, reject) => {
 
             'esri/widgets/Search',
             'esri/widgets/ColorSlider',
+            'esri/widgets/Legend',
 
             'esri/request',
 
@@ -300,6 +304,7 @@ const dojoLoader = (resolve, reject) => {
             Map,
             Graphic,
             Camera,
+            WebScene,
             SceneView,
             externalRenderers,
             FeatureLayer,
@@ -328,6 +333,8 @@ const dojoLoader = (resolve, reject) => {
             SimpleFillSymbol,
             PointSymbol3D,
             ObjectSymbol3DLayer,
+            MeshSymbol3D,
+            FillSymbol3DLayer,
             Geometry,
             Point,
             Extent,
@@ -336,6 +343,7 @@ const dojoLoader = (resolve, reject) => {
             Query,
             Search,
             ColorSlider,
+            Legend,
             esriRequest,
             all,
             on,
@@ -351,6 +359,7 @@ const dojoLoader = (resolve, reject) => {
 
             constructors.Map = Map
             constructors.SceneView = SceneView
+            constructors.WebScene = WebScene
             constructors.externalRenderers = externalRenderers
 
             constructors.layer.FeatureLayer = FeatureLayer
@@ -362,6 +371,7 @@ const dojoLoader = (resolve, reject) => {
             constructors.utils.watchUtils = watchUtils
             constructors.utils.Search = Search
             constructors.utils.ColorSlider = ColorSlider
+            constructors.utils.Legend = Legend
             constructors.utils.jsonUtils = jsonUtils
             constructors.utils.Extent = Extent
             constructors.utils.SpatialReference = SpatialReference
@@ -385,6 +395,8 @@ const dojoLoader = (resolve, reject) => {
             constructors.renderer.Point = Point
             constructors.renderer.PointSymbol3D = PointSymbol3D
             constructors.renderer.ObjectSymbol3DLayer = ObjectSymbol3DLayer
+            constructors.renderer.MeshSymbol3D = MeshSymbol3D
+            constructors.renderer.FillSymbol3DLayer = FillSymbol3DLayer
             constructors.renderer.PointCloudUniqueValueRenderer = PointCloudUniqueValueRenderer
             constructors.renderer.PointCloudRGBRenderer = PointCloudRGBRenderer
             constructors.renderer.PointCloudStretchRenderer = PointCloudStretchRenderer
