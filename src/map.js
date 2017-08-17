@@ -252,6 +252,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/layers/TileLayer',
             'esri/layers/GraphicsLayer',
             'esri/layers/PointCloudLayer',
+            'esri/layers/SceneLayer',
 
             'esri/core/watchUtils',
             'esri/core/Collection',
@@ -305,6 +306,7 @@ const dojoLoader = (resolve, reject) => {
             TileLayer,
             GraphicsLayer,
             PointCloudLayer,
+            SceneLayer,
             watchUtils,
             Collection,
             declare,
@@ -355,6 +357,7 @@ const dojoLoader = (resolve, reject) => {
             constructors.layer.TileLayer = TileLayer
             constructors.layer.GraphicsLayer = GraphicsLayer
             constructors.layer.PointCloudLayer = PointCloudLayer
+            constructors.layer.SceneLayer = SceneLayer
 
             constructors.utils.watchUtils = watchUtils
             constructors.utils.Search = Search
