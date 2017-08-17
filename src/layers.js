@@ -144,7 +144,7 @@ const create = _layer => {
  * @param  {String|Number} _layer - Layer title or ID
  * @return {Object} Layer that will be manipulated
  */
-const find = _layer => {
+export const find = _layer => {
     const map = global.map
 
     return map.allLayers.find(layer => {
