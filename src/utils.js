@@ -20,7 +20,7 @@ export const addGraphicLayer = (_symbol, _point) => {
     const PointSymbol3D = constructors.renderer.PointSymbol3D
     const ObjectSymbol3DLayer = constructors.renderer.ObjectSymbol3DLayer
     const Point = constructors.renderer.Point
-    const Graphic = constructors.renderer.Graphic
+    const Graphic = constructors.utils.Graphic
 
     const graphicsLayer = new GraphicsLayer({
         id: _symbol.id !== '' &&
