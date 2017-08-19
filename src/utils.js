@@ -1,10 +1,38 @@
 import * as logger from './logger'
 import { global, constructors } from './config'
+import { find } from './layers'
+
+/**
+ * Abstract function to add a Graphic Layer on Map
+ * @param {Object} info - Some informations about your layer
+ * @param {String} info.id - You can pass an ID to find this layer after
+ */
+export const addGraphicLayer = ({ info }) => {
+    const map = global.map
+    const GraphicsLayer = constructors.layer.GraphicsLayer
+    const layerId = info.id !== '' &&
+        info.id !== undefined
+        ? info.id
+        : '[ArcE]Graph'
+
+    const graphicsLayer = new GraphicsLayer({
+        raw: {
+            id: layerId
+        }
+    })
+
+    map.add(graphicsLayer)
+
+    logger.log(`Adding ${layerId} as a Graphic Layer on map...`)
+}
 
 /**
  * Helper to add a simple point or text symbol on map using layer
- * @param {Object} info - Some informations about your layer
- * @param {String} info.id - You can pass an ID to find this layer after
+ * @param {Object} layer - Some informations about the container layer
+ * @param {String|Number} layer.id - Layer title or ID
+ * @param {String} layer.popupTemplate - You can pass a popup template to show with your symbol
+ * @param {String} layer.popupTemplate.title - You can pass a title
+ * @param {String} layer.popupTemplate.content - You can pass a content
  * @param {Object} symbol - Some informations about your symbol
  * @param {Number} symbol.width - Width of the symbol
  * @param {Number} symbol.height - Height of the symbol
@@ -20,23 +48,13 @@ import { global, constructors } from './config'
  * @param {Number} text.size - Size in pixels
  * @param {Number} text.font - Font family ex: FontAwesome
  */
-export const addGraphicSymbol = ({info, symbol, point, text}) => {
-    const map = global.map
-    const GraphicsLayer = constructors.layer.GraphicsLayer
+export const addGraphicSymbol = ({layer, symbol, point, text}) => {
     const PointSymbol3D = constructors.renderer.PointSymbol3D
     const ObjectSymbol3DLayer = constructors.renderer.ObjectSymbol3DLayer
     const Point = constructors.renderer.Point
     const TextSymbol = constructors.renderer.TextSymbol
     const Graphic = constructors.utils.Graphic
-
-    const graphicsLayer = new GraphicsLayer({
-        raw: {
-            id: info.id !== '' &&
-                info.id !== undefined
-                ? info.id
-                : '[ArcE]Graph'
-        }
-    })
+    const _layer = find(layer.id || '')
 
     const objectSymbol = new PointSymbol3D({
         symbolLayers: [
@@ -86,11 +104,23 @@ export const addGraphicSymbol = ({info, symbol, point, text}) => {
 
     const pointGraphic = new Graphic({
         geometry: _point,
-        symbol: objectSymbol || textSymbol
+        symbol: objectSymbol || textSymbol,
+        popupTemplate: {}
     })
 
-    map.add(graphicsLayer)
-    graphicsLayer.add(pointGraphic)
+    if (layer.popupTemplate) {
+        if (layer.popupTemplate.title) {
+            pointGraphic.popupTemplate.title = layer.popupTemplate.title
+        }
 
-    logger.log(`Adding a Graphic Layer on map...`)
+        if (layer.popupTemplate.content) {
+            pointGraphic.popupTemplate.content = layer.popupTemplate.content
+        }
+    }
+
+    if (_layer) {
+        _layer.graphics.add(pointGraphic)
+    } else {
+        logger.error(`Can't find layer: ${layer} in map. You already added this layer?`)
+    }
 }
