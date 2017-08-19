@@ -5,6 +5,7 @@ import { global, constructors } from './config'
  * Recieve all layers, work and add on map
  * @constructor
  * @param  {Array} layers - List of layers
+ * @return {Function} - New Layer on Map
  */
 export const add = layers => {
     const map = global.map
@@ -140,6 +141,22 @@ const create = _layer => {
 }
 
 /**
+ * Remove layer from map
+ * @param  {String|Number} _layer - Layer title or ID
+ * @return {Function} - Remove Layer on Map
+ */
+export const remove = _layer => {
+    const map = global.map
+    const layer = find(_layer)
+
+    if (layer) {
+        return map.remove(layer)
+    } else {
+        logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
+    }
+}
+
+/**
  * Find specific layer in map
  * @param  {String|Number} _layer - Layer title or ID
  * @return {Object} Layer that will be manipulated
@@ -205,16 +222,27 @@ export const setOpacity = (_layer, _opacity) => {
 
 /**
  * Change visibility of all layers using parameter
- * @param  {Boolean} visibility - new opacity
+ * @param  {String|Number} _layer - Layer title or ID
+ * @param  {Boolean} visibility - Set if all layers will is visible or not
  */
-const changeVisibility = visibility => {
+const changeVisibility = (_layer, visibility) => {
     const map = global.map
+
+    const toggle = layer => {
+        if (layer.visible === !visibility) {
+            layer.visible = visibility
+            logger.log(`Change visibility of layer: ${layer.raw.title} to: ${visibility}`)
+        }
+    }
 
     map.allLayers.map(layer => {
         if (layer.raw !== undefined) {
-            if (layer.visible === !visibility) {
-                layer.visible = visibility
-                logger.log(`Change visibility of layer: ${layer.raw.title} to: ${visibility}`)
+            if (_layer &&
+                layer.raw.title === _layer ||
+                layer.raw.id === _layer) {
+                toggle(layer)
+            } else {
+                toggle(layer)
             }
         }
     })
@@ -222,14 +250,16 @@ const changeVisibility = visibility => {
 
 /**
  * Set visibility of all layers to false
+ * @param  {String|Number} _layer - Layer title or ID
  */
-export const hideAll = () => {
-    changeVisibility(false)
+export const hideAll = _layer => {
+    changeVisibility(_layer, false)
 }
 
 /**
  * Set visibility of all layers to true
+ * @param  {String|Number} _layer - Layer title or ID
  */
-export const showAll = () => {
-    changeVisibility(true)
+export const showAll = _layer => {
+    changeVisibility(_layer, true)
 }
