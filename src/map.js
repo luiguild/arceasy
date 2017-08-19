@@ -284,6 +284,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/symbols/FillSymbol3DLayer',
             'esri/symbols/LineSymbol3D',
             'esri/symbols/PathSymbol3DLayer',
+            'esri/symbols/TextSymbol',
 
             'esri/geometry/Geometry',
             'esri/geometry/Point',
@@ -343,6 +344,7 @@ const dojoLoader = (resolve, reject) => {
             FillSymbol3DLayer,
             LineSymbol3D,
             PathSymbol3DLayer,
+            TextSymbol,
             Geometry,
             Point,
             Extent,
@@ -411,6 +413,7 @@ const dojoLoader = (resolve, reject) => {
             constructors.renderer.FillSymbol3DLayer = FillSymbol3DLayer
             constructors.renderer.LineSymbol3D = LineSymbol3D
             constructors.renderer.PathSymbol3DLayer = PathSymbol3DLayer
+            constructors.renderer.TextSymbol = TextSymbol
             constructors.renderer.PointCloudUniqueValueRenderer = PointCloudUniqueValueRenderer
             constructors.renderer.PointCloudRGBRenderer = PointCloudRGBRenderer
             constructors.renderer.PointCloudStretchRenderer = PointCloudStretchRenderer
