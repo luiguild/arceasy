@@ -30,9 +30,9 @@ export const addGraphicLayer = ({ info }) => {
  * Helper to add a simple point or text symbol on map using layer
  * @param {Object} layer - Some informations about the container layer
  * @param {String|Number} layer.id - Layer title or ID
- * @param {String} layer.popupTemplate - You can pass a popup template to show with your symbol
- * @param {String} layer.popupTemplate.title - You can pass a title
- * @param {String} layer.popupTemplate.content - You can pass a content
+ * @param {String} popupTemplate - You can pass a popup template to show with your symbol
+ * @param {String} popupTemplate.title - You can pass a title
+ * @param {String} popupTemplate.content - You can pass a content
  * @param {Object} symbol - Some informations about your symbol
  * @param {Number} symbol.width - Width of the symbol
  * @param {Number} symbol.height - Height of the symbol
@@ -48,7 +48,7 @@ export const addGraphicLayer = ({ info }) => {
  * @param {Number} text.size - Size in pixels
  * @param {Number} text.font - Font family ex: FontAwesome
  */
-export const addGraphicSymbol = ({layer, symbol, point, text}) => {
+export const addGraphicSymbol = ({layer, popupTemplate, symbol, point, text}) => {
     const PointSymbol3D = constructors.renderer.PointSymbol3D
     const ObjectSymbol3DLayer = constructors.renderer.ObjectSymbol3DLayer
     const Point = constructors.renderer.Point
@@ -61,19 +61,19 @@ export const addGraphicSymbol = ({layer, symbol, point, text}) => {
             new ObjectSymbol3DLayer({
                 width: symbol !== undefined
                     ? symbol.width
-                    : undefined,
+                    : null,
                 height: symbol !== undefined
                     ? symbol.height
-                    : undefined,
+                    : null,
                 resource: {
                     primitive: symbol !== undefined
                         ? symbol.primitive
-                        : undefined
+                        : null
                 },
                 material: {
                     color: symbol !== undefined
                         ? symbol.color
-                        : undefined
+                        : null
                 }
             })
         ]
@@ -82,39 +82,45 @@ export const addGraphicSymbol = ({layer, symbol, point, text}) => {
     const _point = new Point({
         x: point.x,
         y: point.y,
-        z: point.z
+        z: point.z,
+        latitude: point.latitude,
+        longitude: point.longitude
     })
 
     const textSymbol = new TextSymbol({
         color: text !== undefined
             ? text.color
-            : undefined,
+            : null,
         text: text !== undefined
             ? text.content
-            : undefined,
+            : null,
         font: {
             size: text !== undefined
                 ? text.size
-                : undefined,
+                : null,
             family: text !== undefined
                 ? text.font
-                : undefined
+                : null
         }
     })
 
     const pointGraphic = new Graphic({
         geometry: _point,
-        symbol: objectSymbol || textSymbol,
+        symbol: symbol !== undefined
+            ? objectSymbol
+            : text !== undefined
+            ? textSymbol
+            : null,
         popupTemplate: {}
     })
 
-    if (layer.popupTemplate) {
-        if (layer.popupTemplate.title) {
-            pointGraphic.popupTemplate.title = layer.popupTemplate.title
+    if (popupTemplate) {
+        if (popupTemplate.title) {
+            pointGraphic.popupTemplate.title = popupTemplate.title
         }
 
-        if (layer.popupTemplate.content) {
-            pointGraphic.popupTemplate.content = layer.popupTemplate.content
+        if (popupTemplate.content) {
+            pointGraphic.popupTemplate.content = popupTemplate.content
         }
     }
 

@@ -256,6 +256,7 @@ const dojoLoader = (resolve, reject) => {
             'esri/layers/GraphicsLayer',
             'esri/layers/PointCloudLayer',
             'esri/layers/SceneLayer',
+            'esri/layers/support/LabelClass',
 
             'esri/core/watchUtils',
             'esri/core/Collection',
@@ -285,6 +286,8 @@ const dojoLoader = (resolve, reject) => {
             'esri/symbols/LineSymbol3D',
             'esri/symbols/PathSymbol3DLayer',
             'esri/symbols/TextSymbol',
+            'esri/symbols/LabelSymbol3D',
+            'esri/symbols/TextSymbol3DLayer',
 
             'esri/geometry/Geometry',
             'esri/geometry/Point',
@@ -319,6 +322,7 @@ const dojoLoader = (resolve, reject) => {
             GraphicsLayer,
             PointCloudLayer,
             SceneLayer,
+            LabelClass,
             watchUtils,
             Collection,
             declare,
@@ -345,6 +349,8 @@ const dojoLoader = (resolve, reject) => {
             LineSymbol3D,
             PathSymbol3DLayer,
             TextSymbol,
+            LabelSymbol3D,
+            TextSymbol3DLayer,
             Geometry,
             Point,
             Extent,
@@ -378,6 +384,7 @@ const dojoLoader = (resolve, reject) => {
             constructors.layer.GraphicsLayer = GraphicsLayer
             constructors.layer.PointCloudLayer = PointCloudLayer
             constructors.layer.SceneLayer = SceneLayer
+            constructors.layer.LabelClass = LabelClass
 
             constructors.utils.watchUtils = watchUtils
             constructors.utils.Search = Search
@@ -414,6 +421,8 @@ const dojoLoader = (resolve, reject) => {
             constructors.renderer.LineSymbol3D = LineSymbol3D
             constructors.renderer.PathSymbol3DLayer = PathSymbol3DLayer
             constructors.renderer.TextSymbol = TextSymbol
+            constructors.renderer.LabelSymbol3D = LabelSymbol3D
+            constructors.renderer.TextSymbol3DLayer = TextSymbol3DLayer
             constructors.renderer.PointCloudUniqueValueRenderer = PointCloudUniqueValueRenderer
             constructors.renderer.PointCloudRGBRenderer = PointCloudRGBRenderer
             constructors.renderer.PointCloudStretchRenderer = PointCloudStretchRenderer
