@@ -6,7 +6,7 @@ import { global, constructors } from './config'
  * @param  {Object} map - The map object in memory
  * @param  {Function} View - ESRI View constructor
  * @param  {Object} options - Group of informations about your
- *                            app and how map will be
+ *                            app and how the map will be
  * @param  {String} options.cdn - ESRI CDN Server
  * @param  {String} options.element - DOM element that map will be created
  * @param  {Number} options.scale - Initial map scale
@@ -61,7 +61,7 @@ export const createView = (map, View, options) => {
 
         return view
     } else {
-        logger.fatal(`Fatal error! You need set some map options.`)
+        logger.fatal(`Fatal error! You need to set some map options.`)
     }
 }
 
@@ -176,7 +176,7 @@ export const light = ({cameraTracking, date}) => {
 
 /**
  * Navigate on map using long/lat and camera position
- * @param  {Object} coordinates - Object that contain destiny longitude and latitude
+ * @param  {Object} coordinates - Object that contains destiny longitude and latitude
  * @param  {Number} scale - Scale on earth
  * @param  {Object} camera - Object that contain new angles to position camera
  */
@@ -234,7 +234,7 @@ export const newPosition = ({extent, coordinates, scale, camera}) => {
 
         logger.log(`Changing map position...`)
     } else {
-        logger.error(`You need set a new position formed by a pair of coordinates, a new scale and new camera positions`)
+        logger.error(`You need to set a new position formed by a pair of coordinates, a new scale and new camera position`)
     }
 }
 
@@ -256,6 +256,6 @@ export const changeBasemap = basemap => {
 
         logger.log(`Change basemap...`)
     } else {
-        logger.error(`You need set a new basemap`)
+        logger.error(`You need to set a new basemap`)
     }
 }
