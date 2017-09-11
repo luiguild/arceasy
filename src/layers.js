@@ -2,7 +2,7 @@ import * as logger from './logger'
 import { global, constructors } from './config'
 
 /**
- * Recieve all layers, work and add on map
+ * Receive all layers, work and add on map
  * @constructor
  * @param  {Array} layers - List of layers
  * @return {Function} - New Layer on Map
@@ -10,13 +10,13 @@ import { global, constructors } from './config'
 export const add = layers => {
     const map = global.map
 
-    layers.map((layer, indx) => {
+    layers.map((layer, index) => {
         if (validate(layer)) {
             if (layer.id === undefined ||
                 layer.id === '' ||
                 !layer.id) {
                 logger.log(`Adding id by index on layer`)
-                layer.id = indx
+                layer.id = index
             }
 
             layer.outOfRange = true
@@ -39,7 +39,7 @@ const validate = layer => {
         if (layer.title === undefined ||
             layer.title === '' ||
             !layer.title) {
-            logger.fatal(`You need provide a layer title`)
+            logger.fatal(`You need to provide a layer title`)
 
             return false
         }
@@ -47,19 +47,19 @@ const validate = layer => {
         if (layer.visible === undefined ||
             layer.visible === '') {
             layer.visible = true
-            logger.warn(`You not set intial visible. Usign default: true`)
+            logger.warn(`You did not set an initial value for visible. Using default: true`)
         }
 
         if (layer.definitionExpression === undefined ||
             layer.definitionExpression === '') {
             layer.definitionExpression = ''
-            logger.warn(`You not set intial definitionExpression. Usign default: ''`)
+            logger.warn(`You did not set an initial value for definitionExpression. Using default: ''`)
         }
 
         if (layer.type === undefined ||
             layer.type === '' ||
             layer.type === false) {
-            logger.fatal(`You need provide a layer type (0 = FeatureLayer, 1 = TileLayer)`)
+            logger.fatal(`You need to provide a layer type (0 = FeatureLayer, 1 = TileLayer)`)
 
             return false
         }
@@ -67,14 +67,14 @@ const validate = layer => {
         if (layer.url === undefined ||
             layer.url === '' ||
             !layer.url) {
-            logger.fatal(`You need provide an URL layer`)
+            logger.fatal(`You need to provide a layer URL`)
 
             return false
         }
 
         return true
     } else {
-        logger.fatal(`You need pass some informations to describe your layer`)
+        logger.fatal(`You need to pass some informations to describe your layer`)
         return false
     }
 }

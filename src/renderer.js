@@ -62,7 +62,7 @@ export const createRenderers = () => {
 
 /**
  * Get renderer on template by name
- * @param  {String} _renderer - Name of the rendereder
+ * @param  {String} _renderer - Name of the renderer
  * @return {Object} Renderer constructor template
  */
 const getRenderer = _renderer => {
@@ -108,8 +108,8 @@ const hexToRgbA = hex => {
 }
 
 /**
- * Recieve exa color like #FFF, convert to RGBA and parse to JSON format
- * @param  {String} color - Exa color
+ * Recieve hexa color like #FFF, convert to RGBA and parse to JSON format
+ * @param  {String} color - Hexa color
  * @return {Object} Parsed RGBA color
  */
 const parseColor = color => {

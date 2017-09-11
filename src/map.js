@@ -4,12 +4,12 @@ import { createView } from './view'
 import { global, constructors } from './config'
 
 /**
- * Simple function to set globaly options about the map
- * To start using ArcEasy you need invocate this function first
+ * Simple function to set globally options about the map
+ * To start using ArcEasy you need call this function first
  * @param  {Object} options - Group of informations about your
- *                            app and how map will be
+ *                            app and how the map will be
  * @param  {String} options.cdn - ESRI CDN Server
- * @param  {String} options.element - DOM element that map will be created
+ * @param  {String} options.element - DOM element where the map will be created
  * @param  {Number} options.scale - Initial map scale
  * @param  {Number} options.center.longitude - Center map Longitude
  * @param  {Number} options.center.latitude - Center map Latitude
@@ -18,90 +18,90 @@ import { global, constructors } from './config'
  * @param  {Boolean} options.atmosphere.enable - If atmosphere is enabled
  * @param  {String} options.atmosphere.quality - Atmosphere quality
  * @param  {Boolean} options.watcher - If watcherRunning() is enabled
- * @param  {Boolean} options.light.cameraTracking - If you to display the
+ * @param  {Boolean} options.light.cameraTracking - If you want to display the
  *                                                lighting according to the
  *                                                current time of day
  * @param  {Boolean} options.search.enable - If search is enabled
  * @param  {String} options.search.position - Search position
  * @param  {Number} options.search.index - Search index
- * @param  {Array} options.cors - A group of URLs that you need enable CORS
+ * @param  {Array} options.cors - A group of URLs that you need to enable CORS
  * @param  {String} options.proxy - Single URL that will proxy your requests
  */
 export const options = options => {
     if (options) {
         options.cdn ||
-            logger.warn(`You not set any ESRI CDN. Usign default: ${global.options.cdn}`)
+            logger.warn(`You did not set any ESRI CDN. Using default: ${global.options.cdn}`)
 
         options.element ||
-            logger.fatal(`You need pass an valid DOM element`)
+            logger.fatal(`You need to pass a valid DOM element`)
 
         options.scale ||
-            logger.warn(`You not set scale. Usign default scale: ${global.options.scale}`)
+            logger.warn(`You did not set scale. Using default scale: ${global.options.scale}`)
 
         if (options.center) {
             options.center.longitude ||
-                logger.warn(`You not set intial longitude. Usign default: ${global.options.center.longitude}`)
+                logger.warn(`You did not set intial longitude. Using default: ${global.options.center.longitude}`)
 
             options.center.latitude ||
-                logger.warn(`You not set intial latitude. Usign default: ${global.options.center.latitude}`)
+                logger.warn(`You did not set intial latitude. Using default: ${global.options.center.latitude}`)
         } else {
-            logger.warn(`You not set the map center. Usign defaults | longitude: ${global.options.center.longitude}, latitude: ${global.options.center.latitude}`)
+            logger.warn(`You did not set the map center. Using defaults | longitude: ${global.options.center.longitude}, latitude: ${global.options.center.latitude}`)
         }
 
         options.basemap ||
-            logger.warn(`You not set initial basemap. Usign default: ${global.options.basemap}`)
+            logger.warn(`You did not set initial basemap. Using default: ${global.options.basemap}`)
 
         options.stars === true ||
         options.stars === false ||
-            logger.warn(`You not set if map usign stars. Usign default: ${global.options.stars}`)
+            logger.warn(`You not set if map is using stars. Using default: ${global.options.stars}`)
 
         if (options.atmosphere) {
             options.atmosphere.enable === true ||
             options.atmosphere.enable === false ||
-                logger.warn(`You not set if map usign atmosphere efect. Usign default: ${global.options.atmosphere.enable}`)
+                logger.warn(`You did not set if map is using atmosphere effect. Using default: ${global.options.atmosphere.enable}`)
 
             options.atmosphere.quality ||
-                logger.warn(`You not set atmosphere quality. Usign default: ${global.options.atmosphere.quality}`)
+                logger.warn(`You did not set atmosphere quality. Using default: ${global.options.atmosphere.quality}`)
         } else {
-            logger.warn(`You not set the atmosphere options. Usign defaults | enable: ${global.options.atmosphere.enable}, quality: ${global.options.atmosphere.quality}`)
+            logger.warn(`You did not set the atmosphere options. Using defaults | enable: ${global.options.atmosphere.enable}, quality: ${global.options.atmosphere.quality}`)
         }
 
         options.watcher === true ||
         options.watcher === false ||
-            logger.warn(`You not set if map usign watcher to refresh the layers. Usign default: ${global.options.watcher}`)
+            logger.warn(`You did not set if map is using watcher to refresh the layers. Using default: ${global.options.watcher}`)
 
         if (options.light) {
             options.light.cameraTracking === true ||
             options.light.cameraTracking === false ||
-                logger.warn(`You not set the camera tracking options. Usign default: ${global.options.light.cameraTracking}`)
+                logger.warn(`You did not set the camera tracking options. Using default: ${global.options.light.cameraTracking}`)
 
             options.light.date === '' ||
             options.light.date === undefined ||
-                logger.warn(`You not set a date to view light position.`)
+                logger.warn(`You did not set a date to view light position.`)
         } else {
-            logger.warn(`You not set the light options. Usign default for camera tracking: ${global.options.light.cameraTracking}`)
+            logger.warn(`You did not set the light options. Using default for camera tracking: ${global.options.light.cameraTracking}`)
         }
 
         if (options.search) {
             options.search.enable === true ||
             options.search.enable === false ||
-                logger.warn(`You not set Search. Usign default: ${global.options.search.enable}`)
+                logger.warn(`You did not set Search. Using default: ${global.options.search.enable}`)
 
             options.search.position ||
-                logger.warn(`You not set Search position. Usign default: ${global.options.search.position}`)
+                logger.warn(`You did not set Search position. Using default: ${global.options.search.position}`)
 
             options.search.index ||
-                logger.warn(`You not set Search index. Usign default: ${global.options.search.index}`)
+                logger.warn(`You did not set Search index. Using default: ${global.options.search.index}`)
         } else {
-            logger.warn(`You not set the search options. Usign defaults | enable: ${global.options.search.enable}, position: ${global.options.search.position}, index: ${global.options.search.index}`)
+            logger.warn(`You did not set the search options. Using defaults | enable: ${global.options.search.enable}, position: ${global.options.search.position}, index: ${global.options.search.index}`)
         }
 
         options.cors &&
         options.cors.length > 0 ||
-            logger.warn(`You not set any URL to enable CORS requests`)
+            logger.warn(`You did not set any URL to enable CORS requests`)
 
         options.proxy ||
-            logger.warn(`You not set any URL to proxy your requests`)
+            logger.warn(`You did not set any URL to proxy your requests`)
 
         global.options = {
             cdn: options.cdn !== '' &&
@@ -191,13 +191,13 @@ export const options = options => {
         global.loaded = true
         logger.log(`Ready to start!`)
     } else {
-        logger.fatal(`You need pass some informations to describe your map`)
+        logger.fatal(`You need to pass some informations to describe your map`)
     }
 }
 
 /**
  * The BigBang function
- * To create your map you need invocate this function
+ * To create your map you need to call this function
  */
 export const start = () => {
     return new Promise((resolve, reject) => {
@@ -235,7 +235,7 @@ export const start = () => {
  * create necessary constructors,
  * create map,
  * create view,
- * and put in page
+ * and put in  the page
  */
 const dojoLoader = (resolve, reject) => {
     if (global.loaded) {
@@ -434,7 +434,7 @@ const dojoLoader = (resolve, reject) => {
             constructors.dojo.query = query
 
             if (constructors.Map && constructors.SceneView) {
-                logger.log(`All constructorss created!`)
+                logger.log(`All constructors created!`)
 
                 createMap(
                     constructors.Map,
@@ -460,7 +460,7 @@ const dojoLoader = (resolve, reject) => {
             }
         })
     } else {
-        logger.fatal(`Fatal error! You need set some map options.`)
+        logger.fatal(`Fatal error! You need to set some map options.`)
         reject()
     }
 }
