@@ -28,41 +28,41 @@ import { global, constructors } from './config'
  * @return {Object} Global view object descriptor
  */
 export const createView = (map, View, options) => {
-    if (global.loaded) {
-        logger.log('Creating View...')
+  if (global.loaded) {
+    logger.log('Creating View...')
 
-        const view = new View({
-            container: options.element,
-            map: map,
-            scale: options.scale,
-            center: [
-                options.center.longitude,
-                options.center.latitude
-            ],
-            viewingMode: 'global',
-            starsEnabled: options.stars,
-            atmosphereEnabled: options.atmosphere.enable,
-            loaded: true
-        })
+    const view = new View({
+      container: options.element,
+      map: map,
+      scale: options.scale,
+      center: [
+        options.center.longitude,
+        options.center.latitude
+      ],
+      viewingMode: 'global',
+      starsEnabled: options.stars,
+      atmosphereEnabled: options.atmosphere.enable,
+      loaded: true
+    })
 
-        view.then(() => {
-            logger.log('View ready!')
+    view.when(() => {
+      logger.log('View ready!')
+      controlUI(view)
+      // light({
+      //     cameraTracking: options.light.cameraTracking,
+      //     date: options.light.date
+      // })
 
-            controlUI(view)
-            // light({
-            //     cameraTracking: options.light.cameraTracking,
-            //     date: options.light.date
-            // })
+      if (options.watcher) {
+        watcherRunning(view)
+      }
+    })
+    // })
 
-            if (options.watcher) {
-                watcherRunning(view)
-            }
-        })
-
-        return view
-    } else {
-        logger.fatal(`Fatal error! You need to set some map options.`)
-    }
+    return Promise.resolve(view)
+  } else {
+    logger.fatal(`Fatal error! You need to set some map options.`)
+  }
 }
 
 /**
@@ -72,52 +72,51 @@ export const createView = (map, View, options) => {
  * @param  {Object} view - Global view object descriptor
  */
 const watcherRunning = view => {
-    const watchUtils = constructors.utils.watchUtils
+  const watchUtils = constructors.utils.watchUtils
 
-    logger.log(`Watcher running! Waiting changes on view.`)
+  logger.log(`Watcher running! Waiting changes on view.`)
 
-    watchUtils.whenTrue(view, 'stationary', () => {
-        logger.log(`View changed! Getting extent to refreshing layers...`)
-        console.log(view.extent.center.latitude, view.extent.center.longitude, view.scale)
+  watchUtils.whenTrue(view, 'stationary', () => {
+    logger.log(`View changed! Getting extent to refreshing layers...`)
 
-        refreshExtent(view)
-    })
+    refreshExtent(view)
+  })
 }
 
- /**
+/**
   * Function to get the actual extent and set the definition expression
   * on layer and make an request to refreh the layer info
   * @param  {Object} view - Global view object descriptor
   */
 const refreshExtent = view => {
-    const map = global.map
-    const urlQuery = `!xmin=${view.extent.xmin}!xmax=${view.extent.xmax}!ymin=${view.extent.ymin}!ymax=${view.extent.ymax}`
+  const map = global.map
+  const urlQuery = `!xmin=${view.extent.xmin}!xmax=${view.extent.xmax}!ymin=${view.extent.ymin}!ymax=${view.extent.ymax}`
 
-    map.allLayers.map(layer => {
-        if (layer.raw !== undefined) {
-            if (layer.raw.progressive) {
-                if ((view.scale < layer.minScale &&
+  map.allLayers.map(layer => {
+    if (layer.raw !== undefined) {
+      if (layer.raw.progressive) {
+        if ((view.scale < layer.minScale &&
                         view.scale > layer.maxScale) ||
                         (layer.minScale === 0 &&
                         layer.maxScale === 0)) {
-                    if (layer.raw.type === 0) {
-                        layer.definitionExpression = urlQuery
-                    }
-                    layer.outOfRange = false
+          if (layer.raw.type === 0) {
+            layer.definitionExpression = urlQuery
+          }
+          layer.outOfRange = false
 
-                    if (layer.visible) {
-                        logger.log(`Drawing progressive layer: ${layer.title} | URL requested: ${layer.raw.url}/where=${urlQuery}`)
-                    }
-                } else {
-                    if (layer.visible) {
-                        logger.log(`${layer.title} it's visible, but is out of range`)
-                    }
+          if (layer.visible) {
+            logger.log(`Drawing progressive layer: ${layer.title} | URL requested: ${layer.raw.url}/where=${urlQuery}`)
+          }
+        } else {
+          if (layer.visible) {
+            logger.log(`${layer.title} it's visible, but is out of range`)
+          }
 
-                    layer.outOfRange = true
-                }
-            }
+          layer.outOfRange = true
         }
-    })
+      }
+    }
+  })
 }
 
 /**
@@ -125,53 +124,61 @@ const refreshExtent = view => {
  * @param  {Object} view - Global view object descriptor
  */
 const controlUI = view => {
-    logger.log('Changing UI elements...')
+  logger.log('Changing UI elements...')
 
-    view.environment.atmosphereEnabled = global.options.atmosphere.enable
-    view.environment.atmosphere.quality = global.options.atmosphere.quality
+  view.environment.atmosphereEnabled = global.options.atmosphere.enable
+  view.environment.atmosphere.quality = global.options.atmosphere.quality
 
-    if (global.options.search.enable) {
-        const Search = constructors.utils.Search
-        const searchWidget = new Search({
-            view: view
-        })
+  if (global.options.search.enable) {
+    const Search = constructors.utils.Search
 
-        view.ui.add(searchWidget, {
-            position: global.options.search.position,
-            index: global.options.search.index
-        })
-    }
+    const searchWidget = new Search({
+      view: view
+    })
 
-    view.ui.remove([
-        'zoom',
-        'compass',
-        'navigation-toggle'
-    ])
+    view.ui.add(searchWidget, {
+      position: global.options.search.position,
+      index: global.options.search.index
+    })
+  }
+
+  const Home = constructors.utils.Home
+
+  const homeWidget = new Home({
+    view: view
+  })
+  view.ui.add(homeWidget, 'top-left')
+
+  // view.ui.remove([
+  //   'zoom',
+  //   'compass',
+  //   'navigation-toggle'
+  // ])
 }
 
 /**
  * Change camera tracking
  * @param  {Object} cameraTracking - Set the light on the world based on camera or not
  */
-export const light = ({cameraTracking, date}) => {
-    const view = global.view
+export const light = ({ cameraTracking, date }) => {
+  const view = global.view
 
-    if (cameraTracking !== '' &&
+  if (cameraTracking !== '' &&
         cameraTracking !== undefined) {
-        logger.log(`Changing light camera tracking to: ${cameraTracking}`)
-        view.environment.lighting.cameraTrackingEnabled = cameraTracking
-    }
+    logger.log(`Changing light camera tracking to: ${cameraTracking}`)
+    view.environment.lighting.cameraTrackingEnabled = cameraTracking
+  }
 
-    if (date === 'now') {
-        logger.log(`Changing light date to: ${date}`)
-        view.environment.lighting.date = Date.now()
-    }
+  if (date === 'now') {
+    logger.log(`Changing light date to: ${date}`)
+    view.environment.lighting.date = Date.now()
+  }
 
-    if (date === '' ||
+  if (date === '' ||
         date === undefined) {
-        view.environment.lighting.date = new Date('Jul 15 2017 12:00:00')
-        logger.log(`Changing light date to: default - Jul 15 2017 12:00:00`)
-    }
+    view.environment.lighting.date = new Date('Jul 15 2017 12:00:00')
+    logger.log(`Changing light date to: default - Jul 15 2017 12:00:00`)
+  }
 }
 
 /**
@@ -180,62 +187,62 @@ export const light = ({cameraTracking, date}) => {
  * @param  {Number} scale - Scale on earth
  * @param  {Object} camera - Object that contain new angles to position camera
  */
-export const newPosition = ({extent, coordinates, scale, camera}) => {
-    if (extent !== undefined ||
+export const newPosition = ({ extent, coordinates, scale, camera }) => {
+  if (extent !== undefined ||
         coordinates !== undefined ||
         scale !== undefined ||
         camera !== undefined) {
-        const view = global.view
-        const Extent = constructors.utils.Extent
-        let newExtent
+    const view = global.view
+    const Extent = constructors.utils.Extent
+    let newExtent
 
-        if (extent) {
-            newExtent = new Extent({
-                xmax: extent.xmax || '',
-                xmin: extent.xmin || '',
-                ymax: extent.ymax || '',
-                ymin: extent.ymin || '',
-                spatialReference: {
-                    wkid: extent.spatialReference
-                        ? extent.spatialReference.wkid
-                        : ''
-                }
-            })
+    if (extent) {
+      newExtent = new Extent({
+        xmax: extent.xmax || '',
+        xmin: extent.xmin || '',
+        ymax: extent.ymax || '',
+        ymin: extent.ymin || '',
+        spatialReference: {
+          wkid: extent.spatialReference
+            ? extent.spatialReference.wkid
+            : ''
         }
+      })
+    }
 
-        view.goTo({
-            target: extent &&
+    view.goTo({
+      target: extent &&
                 newExtent
-                ? newExtent
-                : '',
-            center:
+        ? newExtent
+        : '',
+      center:
                 coordinates &&
                 coordinates.longitude &&
                 coordinates.latitude
-                ? [
+                  ? [
                     coordinates.longitude,
                     coordinates.latitude
-                ]
-                : '',
-            scale: scale || '',
-            tilt: camera &&
+                  ]
+                  : '',
+      scale: scale || '',
+      tilt: camera &&
                 camera.tilt
-                ? camera.tilt
-                : '',
-            heading: camera &&
+        ? camera.tilt
+        : '',
+      heading: camera &&
                 camera.heading
-                ? camera.heading
-                : '',
-            position: camera &&
+        ? camera.heading
+        : '',
+      position: camera &&
                 camera.position
-                ? camera.position
-                : ''
-        })
+        ? camera.position
+        : ''
+    })
 
-        logger.log(`Changing map position...`)
-    } else {
-        logger.error(`You need to set a new position formed by a pair of coordinates, a new scale and new camera position`)
-    }
+    logger.log(`Changing map position...`)
+  } else {
+    logger.error(`You need to set a new position formed by a pair of coordinates, a new scale and new camera position`)
+  }
 }
 
 /**
@@ -249,13 +256,13 @@ export const newPosition = ({extent, coordinates, scale, camera}) => {
  *                          or 'none'
  */
 export const changeBasemap = basemap => {
-    if (basemap) {
-        const map = global.map
+  if (basemap) {
+    const map = global.map
 
-        map.basemap = basemap
+    map.basemap = basemap
 
-        logger.log(`Change basemap...`)
-    } else {
-        logger.error(`You need to set a new basemap`)
-    }
+    logger.log(`Change basemap...`)
+  } else {
+    logger.error(`You need to set a new basemap`)
+  }
 }

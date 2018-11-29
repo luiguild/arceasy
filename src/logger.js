@@ -6,13 +6,13 @@ let fatalCounter = 0
 let warnCounter = 0
 
 /**
- * Simple function to check if an object is undefined. Returns an empty String if the 
+ * Simple function to check if an object is undefined. Returns an empty String if the
  * object is undefined or the object itself if not
  * @param {Object} object  - Your log object
  * @return {Object|String}
  */
 const getLogObject = (object) => (
-    object !== undefined ? object : ''
+  object !== undefined ? object : ''
 )
 
 /**
@@ -22,9 +22,9 @@ const getLogObject = (object) => (
  * @return {Function}
  */
 export const log = (message, _object) => {
-    logCounter++
+  logCounter++
 
-    return console.log(`${logCounter} [LOG|${prefix}] ${message}`, getLogObject(_object))
+  return console.log(`${logCounter} [LOG|${prefix}] ${message}`, getLogObject(_object))
 }
 
 /**
@@ -34,9 +34,9 @@ export const log = (message, _object) => {
  * @return {Function}
  */
 export const error = (message, _object) => {
-    errorCounter++
+  errorCounter++
 
-    return console.error(`${errorCounter} [ERROR|${prefix}] ${message}`, getLogObject(_object))
+  return console.error(`${errorCounter} [ERROR|${prefix}] ${message}`, getLogObject(_object))
 }
 
 /**
@@ -45,9 +45,9 @@ export const error = (message, _object) => {
  * @return {Function}
  */
 export const fatal = (message) => {
-    fatalCounter++
+  fatalCounter++
 
-    throw new Error(`${fatalCounter} [FATAL|${prefix}] ${message}`)
+  throw new Error(`${fatalCounter} [FATAL|${prefix}] ${message}`)
 }
 
 /**
@@ -57,7 +57,7 @@ export const fatal = (message) => {
  * @return {Function}
  */
 export const warn = (message, _object) => {
-    warnCounter++
+  warnCounter++
 
-    return console.warn(`${warnCounter} [WARN|${prefix}] ${message}`, getLogObject(_object))
+  return console.warn(`${warnCounter} [WARN|${prefix}] ${message}`, getLogObject(_object))
 }

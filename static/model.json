@@ -1,33 +1,33 @@
 {
-    "layers": [
-        {
-            "id": 0,
-            "title": "",
-            "visible": false,
-            "type": 0,
-            "progressive": false,
-            "url": "",
-            "definitionExpression": "",
-            "timeRange": {
-                "initial": {
-                    "date": "",
-    				"time": ""
-                },
-                "end": {
-                    "date": "",
-    				"time": ""
-                },
-                "min": {
-                    "date": "",
-    				"time": ""
-                },
-                "max": {
-                    "date": "",
-    				"time": ""
-                }
-			},
-            "renderer": {},
-            "popupTemplate": {}
+  "layers": [
+    {
+      "id": 0,
+      "title": "",
+      "visible": false,
+      "type": 0,
+      "progressive": false,
+      "url": "",
+      "definitionExpression": "",
+      "timeRange": {
+        "initial": {
+          "date": "",
+          "time": ""
+        },
+        "end": {
+          "date": "",
+          "time": ""
+        },
+        "min": {
+          "date": "",
+          "time": ""
+        },
+        "max": {
+          "date": "",
+          "time": ""
         }
-    ]
+      },
+      "renderer": {},
+      "popupTemplate": {}
+    }
+  ]
 }

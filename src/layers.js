@@ -8,22 +8,22 @@ import { global, constructors } from './config'
  * @return {Function} - New Layer on Map
  */
 export const add = layers => {
-    const map = global.map
+  const map = global.map
 
-    layers.map((layer, index) => {
-        if (validate(layer)) {
-            if (layer.id === undefined ||
+  layers.map((layer, index) => {
+    if (validate(layer)) {
+      if (layer.id === undefined ||
                 layer.id === '' ||
                 !layer.id) {
-                logger.log(`Adding id by index on layer`)
-                layer.id = index
-            }
+        logger.log(`Adding id by index on layer`)
+        layer.id = index
+      }
 
-            layer.outOfRange = true
+      layer.outOfRange = true
 
-            return map.add(create(layer))
-        }
-    })
+      return map.add(create(layer))
+    }
+  })
 }
 
 /**
@@ -32,51 +32,51 @@ export const add = layers => {
  * @return {Boolean} True or false to validation
  */
 const validate = layer => {
-    if (layer) {
-        !layer.title ||
+  if (layer) {
+    !layer.title ||
             logger.log(`Validating layer: ${layer.title}`)
 
-        if (layer.title === undefined ||
+    if (layer.title === undefined ||
             layer.title === '' ||
             !layer.title) {
-            logger.fatal(`You need to provide a layer title`)
+      logger.fatal(`You need to provide a layer title`)
 
-            return false
-        }
+      return false
+    }
 
-        if (layer.visible === undefined ||
+    if (layer.visible === undefined ||
             layer.visible === '') {
-            layer.visible = true
-            logger.warn(`You did not set an initial value for visible. Using default: true`)
-        }
+      layer.visible = true
+      logger.warn(`You did not set an initial value for visible. Using default: true`)
+    }
 
-        if (layer.definitionExpression === undefined ||
+    if (layer.definitionExpression === undefined ||
             layer.definitionExpression === '') {
-            layer.definitionExpression = ''
-            logger.warn(`You did not set an initial value for definitionExpression. Using default: ''`)
-        }
+      layer.definitionExpression = ''
+      logger.warn(`You did not set an initial value for definitionExpression. Using default: ''`)
+    }
 
-        if (layer.type === undefined ||
+    if (layer.type === undefined ||
             layer.type === '' ||
             layer.type === false) {
-            logger.fatal(`You need to provide a layer type (0 = FeatureLayer, 1 = TileLayer)`)
+      logger.fatal(`You need to provide a layer type (0 = FeatureLayer, 1 = TileLayer)`)
 
-            return false
-        }
+      return false
+    }
 
-        if (layer.url === undefined ||
+    if (layer.url === undefined ||
             layer.url === '' ||
             !layer.url) {
-            logger.fatal(`You need to provide a layer URL`)
+      logger.fatal(`You need to provide a layer URL`)
 
-            return false
-        }
-
-        return true
-    } else {
-        logger.fatal(`You need to pass some informations to describe your layer`)
-        return false
+      return false
     }
+
+    return true
+  } else {
+    logger.fatal(`You need to pass some informations to describe your layer`)
+    return false
+  }
 }
 
 /**
@@ -85,59 +85,59 @@ const validate = layer => {
  * @return {Object} Layer ready to add on map
  */
 const create = _layer => {
-    const layerConstructors = constructors.layer
-    const utilsConstructors = constructors.utils
-    const jsonUtils = utilsConstructors.jsonUtils
-    let LayerType
-    let layerLabel
+  const layerConstructors = constructors.layer
+  const utilsConstructors = constructors.utils
+  const jsonUtils = utilsConstructors.jsonUtils
+  let LayerType
+  let layerLabel
 
-    if (_layer.type === 0) {
-        layerLabel = 'Feature Layer'
-        LayerType = layerConstructors.FeatureLayer
-    } else if (_layer.type === 1) {
-        layerLabel = 'Tile Layer'
-        LayerType = layerConstructors.TileLayer
-    }
+  if (_layer.type === 0) {
+    layerLabel = 'Feature Layer'
+    LayerType = layerConstructors.FeatureLayer
+  } else if (_layer.type === 1) {
+    layerLabel = 'Tile Layer'
+    LayerType = layerConstructors.TileLayer
+  }
 
-    const layer = new LayerType({
-        id: _layer.id,
-        title: _layer.title,
-        url: _layer.url,
-        definitionExpression: _layer.definitionExpression,
-        raw: _layer,
-        visible: _layer.visible
-    })
+  const layer = new LayerType({
+    id: _layer.id,
+    title: _layer.title,
+    url: _layer.url,
+    definitionExpression: _layer.definitionExpression,
+    raw: _layer,
+    visible: _layer.visible
+  })
 
-    logger.log(`Adding a ${layerLabel} on map: ${layer.raw.title} | Visibility: ${layer.raw.visible} | URL: ${layer.raw.url}`)
+  logger.log(`Adding a ${layerLabel} on map: ${layer.raw.title} | Visibility: ${layer.raw.visible} | URL: ${layer.raw.url}`)
 
-    if (layer.raw.renderer) {
-        logger.log(`Applying renderer...`)
+  if (layer.raw.renderer) {
+    logger.log(`Applying renderer...`)
 
-        layer.renderer = jsonUtils.fromJSON(layer.raw.renderer)
-    }
+    layer.renderer = jsonUtils.fromJSON(layer.raw.renderer)
+  }
 
-    // if (layer.raw.popupTemplate) {
-    //     layer.popupTemplate = applyingPopups(layer.raw)
-    // }
+  // if (layer.raw.popupTemplate) {
+  //     layer.popupTemplate = applyingPopups(layer.raw)
+  // }
 
-    layer.then(() => {
-        logger.log(`Layer ${layer.title} ready!`)
+  layer.then(() => {
+    logger.log(`Layer ${layer.title} ready!`)
 
-        if (layer.raw.type === 1) {
-            layer.minScale = layer.raw.minScale !== null &&
+    if (layer.raw.type === 1) {
+      layer.minScale = layer.raw.minScale !== null &&
                 parseInt(layer.raw.minScale) !== 0
-                ? layer.raw.minScale
-                : 0
-            layer.maxScale = layer.raw.maxScale !== null &&
+        ? layer.raw.minScale
+        : 0
+      layer.maxScale = layer.raw.maxScale !== null &&
                 parseInt(layer.raw.maxScale)
-                ? layer.raw.maxScale
-                : 0
+        ? layer.raw.maxScale
+        : 0
 
-            // logger.log(`minScale: ${parseInt(layer.minScale)} and maxScale: ${parseInt(layer.maxScale)} defined manually`)
-        }
-    })
+      // logger.log(`minScale: ${parseInt(layer.minScale)} and maxScale: ${parseInt(layer.maxScale)} defined manually`)
+    }
+  })
 
-    return layer
+  return layer
 }
 
 /**
@@ -146,14 +146,14 @@ const create = _layer => {
  * @return {Function} - Remove Layer on Map
  */
 export const remove = _layer => {
-    const map = global.map
-    const layer = find(_layer)
+  const map = global.map
+  const layer = find(_layer)
 
-    if (layer) {
-        return map.remove(layer)
-    } else {
-        logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
-    }
+  if (layer) {
+    return map.remove(layer)
+  } else {
+    logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
+  }
 }
 
 /**
@@ -162,16 +162,16 @@ export const remove = _layer => {
  * @return {Object} Layer that will be manipulated
  */
 export const find = _layer => {
-    const map = global.map
+  const map = global.map
 
-    return map.allLayers.find(layer => {
-        if (layer.raw !== undefined) {
-            if (layer.raw.title === _layer ||
+  return map.allLayers.find(layer => {
+    if (layer.raw !== undefined) {
+      if (layer.raw.title === _layer ||
                 layer.raw.id === _layer) {
-                return layer
-            }
-        }
-    })
+        return layer
+      }
+    }
+  })
 }
 
 /**
@@ -179,13 +179,13 @@ export const find = _layer => {
  * @return {Array} list of all layers included by user
  */
 export const all = () => {
-    const map = global.map
+  const map = global.map
 
-    return map.allLayers._items.filter(layer => {
-        if (layer.raw !== undefined) {
-            return true
-        }
-    })
+  return map.allLayers._items.filter(layer => {
+    if (layer.raw !== undefined) {
+      return true
+    }
+  })
 }
 
 /**
@@ -194,14 +194,14 @@ export const all = () => {
  * @param  {Boolean} visibility - Set if layer is visible or not
  */
 export const setVisibility = (_layer, visibility) => {
-    const layer = find(_layer)
+  const layer = find(_layer)
 
-    if (layer) {
-        layer.visible = visibility
-        logger.log(`Change visibility of layer: ${_layer} to: ${visibility}`)
-    } else {
-        logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
-    }
+  if (layer) {
+    layer.visible = visibility
+    logger.log(`Change visibility of layer: ${_layer} to: ${visibility}`)
+  } else {
+    logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
+  }
 }
 
 /**
@@ -210,14 +210,14 @@ export const setVisibility = (_layer, visibility) => {
  * @param  {Number} _opacity - new opacity
  */
 export const setOpacity = (_layer, _opacity) => {
-    const layer = find(_layer)
+  const layer = find(_layer)
 
-    if (layer) {
-        layer.opacity = _opacity / 100
-        logger.log(`Change opacity of layer: ${_layer} to: ${_opacity}`)
-    } else {
-        logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
-    }
+  if (layer) {
+    layer.opacity = _opacity / 100
+    logger.log(`Change opacity of layer: ${_layer} to: ${_opacity}`)
+  } else {
+    logger.error(`Can't find layer: ${_layer} in map. You already added this layer?`)
+  }
 }
 
 /**
@@ -226,26 +226,26 @@ export const setOpacity = (_layer, _opacity) => {
  * @param  {Boolean} visibility - Set if all layers will is visible or not
  */
 const changeVisibility = (_layer, visibility) => {
-    const map = global.map
+  const map = global.map
 
-    const toggle = layer => {
-        if (layer.visible === !visibility) {
-            layer.visible = visibility
-            logger.log(`Change visibility of layer: ${layer.raw.title} to: ${visibility}`)
-        }
+  const toggle = layer => {
+    if (layer.visible === !visibility) {
+      layer.visible = visibility
+      logger.log(`Change visibility of layer: ${layer.raw.title} to: ${visibility}`)
     }
+  }
 
-    map.allLayers.map(layer => {
-        if (layer.raw !== undefined) {
-            if (_layer &&
+  map.allLayers.map(layer => {
+    if (layer.raw !== undefined) {
+      if (_layer &&
                 layer.raw.title === _layer ||
                 layer.raw.id === _layer) {
-                toggle(layer)
-            } else {
-                toggle(layer)
-            }
-        }
-    })
+        toggle(layer)
+      } else {
+        toggle(layer)
+      }
+    }
+  })
 }
 
 /**
@@ -253,7 +253,7 @@ const changeVisibility = (_layer, visibility) => {
  * @param  {String|Number} _layer - Layer title or ID
  */
 export const hideAll = _layer => {
-    changeVisibility(_layer, false)
+  changeVisibility(_layer, false)
 }
 
 /**
@@ -261,5 +261,5 @@ export const hideAll = _layer => {
  * @param  {String|Number} _layer - Layer title or ID
  */
 export const showAll = _layer => {
-    changeVisibility(_layer, true)
+  changeVisibility(_layer, true)
 }
